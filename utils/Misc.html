@@ -1,0 +1,968 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1" />
+<meta name="generator" content="pdoc 0.9.2" />
+<title>osbot_utils.utils.Misc API documentation</title>
+<meta name="description" content="" />
+<link rel="preload stylesheet" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/10up-sanitize.css/11.0.1/sanitize.min.css" integrity="sha256-PK9q560IAAa6WVRRh76LtCaI8pjTJ2z11v0miyNNjrs=" crossorigin>
+<link rel="preload stylesheet" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/10up-sanitize.css/11.0.1/typography.min.css" integrity="sha256-7l/o7C8jubJiy74VsKTidCy1yBkRtiUGbVkYBylBqUg=" crossorigin>
+<link rel="stylesheet preload" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/10.1.1/styles/github.min.css" crossorigin>
+<style>:root{--highlight-color:#fe9}.flex{display:flex !important}body{line-height:1.5em}#content{padding:20px}#sidebar{padding:30px;overflow:hidden}#sidebar > *:last-child{margin-bottom:2cm}.http-server-breadcrumbs{font-size:130%;margin:0 0 15px 0}#footer{font-size:.75em;padding:5px 30px;border-top:1px solid #ddd;text-align:right}#footer p{margin:0 0 0 1em;display:inline-block}#footer p:last-child{margin-right:30px}h1,h2,h3,h4,h5{font-weight:300}h1{font-size:2.5em;line-height:1.1em}h2{font-size:1.75em;margin:1em 0 .50em 0}h3{font-size:1.4em;margin:25px 0 10px 0}h4{margin:0;font-size:105%}h1:target,h2:target,h3:target,h4:target,h5:target,h6:target{background:var(--highlight-color);padding:.2em 0}a{color:#058;text-decoration:none;transition:color .3s ease-in-out}a:hover{color:#e82}.title code{font-weight:bold}h2[id^="header-"]{margin-top:2em}.ident{color:#900}pre code{background:#f8f8f8;font-size:.8em;line-height:1.4em}code{background:#f2f2f1;padding:1px 4px;overflow-wrap:break-word}h1 code{background:transparent}pre{background:#f8f8f8;border:0;border-top:1px solid #ccc;border-bottom:1px solid #ccc;margin:1em 0;padding:1ex}#http-server-module-list{display:flex;flex-flow:column}#http-server-module-list div{display:flex}#http-server-module-list dt{min-width:10%}#http-server-module-list p{margin-top:0}.toc ul,#index{list-style-type:none;margin:0;padding:0}#index code{background:transparent}#index h3{border-bottom:1px solid #ddd}#index ul{padding:0}#index h4{margin-top:.6em;font-weight:bold}@media (min-width:200ex){#index .two-column{column-count:2}}@media (min-width:300ex){#index .two-column{column-count:3}}dl{margin-bottom:2em}dl dl:last-child{margin-bottom:4em}dd{margin:0 0 1em 3em}#header-classes + dl > dd{margin-bottom:3em}dd dd{margin-left:2em}dd p{margin:10px 0}.name{background:#eee;font-weight:bold;font-size:.85em;padding:5px 10px;display:inline-block;min-width:40%}.name:hover{background:#e0e0e0}dt:target .name{background:var(--highlight-color)}.name > span:first-child{white-space:nowrap}.name.class > span:nth-child(2){margin-left:.4em}.inherited{color:#999;border-left:5px solid #eee;padding-left:1em}.inheritance em{font-style:normal;font-weight:bold}.desc h2{font-weight:400;font-size:1.25em}.desc h3{font-size:1em}.desc dt code{background:inherit}.source summary,.git-link-div{color:#666;text-align:right;font-weight:400;font-size:.8em;text-transform:uppercase}.source summary > *{white-space:nowrap;cursor:pointer}.git-link{color:inherit;margin-left:1em}.source pre{max-height:500px;overflow:auto;margin:0}.source pre code{font-size:12px;overflow:visible}.hlist{list-style:none}.hlist li{display:inline}.hlist li:after{content:',\2002'}.hlist li:last-child:after{content:none}.hlist .hlist{display:inline;padding-left:1em}img{max-width:100%}td{padding:0 .5em}.admonition{padding:.1em .5em;margin-bottom:1em}.admonition-title{font-weight:bold}.admonition.note,.admonition.info,.admonition.important{background:#aef}.admonition.todo,.admonition.versionadded,.admonition.tip,.admonition.hint{background:#dfd}.admonition.warning,.admonition.versionchanged,.admonition.deprecated{background:#fd4}.admonition.error,.admonition.danger,.admonition.caution{background:lightpink}</style>
+<style media="screen and (min-width: 700px)">@media screen and (min-width:700px){#sidebar{width:30%;height:100vh;overflow:auto;position:sticky;top:0}#content{width:70%;max-width:100ch;padding:3em 4em;border-left:1px solid #ddd}pre code{font-size:1em}.item .name{font-size:1em}main{display:flex;flex-direction:row-reverse;justify-content:flex-end}.toc ul ul,#index ul{padding-left:1.5em}.toc > ul > li{margin-top:.5em}}</style>
+<style media="print">@media print{#sidebar h1{page-break-before:always}.source{display:none}}@media print{*{background:transparent !important;color:#000 !important;box-shadow:none !important;text-shadow:none !important}a[href]:after{content:" (" attr(href) ")";font-size:90%}a[href][title]:after{content:none}abbr[title]:after{content:" (" attr(title) ")"}.ir a:after,a[href^="javascript:"]:after,a[href^="#"]:after{content:""}pre,blockquote{border:1px solid #999;page-break-inside:avoid}thead{display:table-header-group}tr,img{page-break-inside:avoid}img{max-width:100% !important}@page{margin:0.5cm}p,h2,h3{orphans:3;widows:3}h1,h2,h3,h4,h5,h6{page-break-after:avoid}}</style>
+<script defer src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/10.1.1/highlight.min.js" integrity="sha256-Uv3H6lx7dJmRfRvH8TH6kJD1TSK1aFcwgx+mdg3epi8=" crossorigin></script>
+<script>window.addEventListener('DOMContentLoaded', () => hljs.initHighlighting())</script>
+</head>
+<body>
+<main>
+<article id="content">
+<header>
+<h1 class="title">Module <code>osbot_utils.utils.Misc</code></h1>
+</header>
+<section id="section-intro">
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">import base64
+import hashlib
+import json
+import random
+import string
+import sys
+import textwrap
+import re
+import uuid
+from datetime import datetime
+from secrets import token_bytes
+from time import sleep
+from osbot_utils.decorators.methods.function_type_check import function_type_check
+
+@function_type_check
+def array_add(array : list, value):
+    if value is not None:
+        array.append(value)
+    return value
+
+@function_type_check
+def array_find(array:list, item):
+    if item in array:
+        return array.index(item)
+    return -1
+
+def array_get(array, position=None, default=None):
+    if type(array) is list:
+        if type(position) is int and position &gt;=0 :
+            if  len(array) &gt; position:
+                return array[position]
+    return default
+
+def array_pop(array:list, position=None, default=None):
+    if array:
+        if len(array) &gt;0:
+            if type(position) is int:
+                if len(array) &gt; position:
+                    return array.pop(position)
+            else:
+                return array.pop()
+    return default
+
+def array_pop_and_trim(array, position=None):
+    value = array_pop(array,position)
+    if type(value) is str:
+        return trim(value)
+    return value
+
+def bytes_to_base64(bytes):
+    return base64.b64encode(bytes).decode()
+
+def chunks(items:list, split: int):
+    if items and split and split &gt; 0:
+        for i in range(0, len(items), split):
+            yield items[i:i + split]
+
+def class_name(target):
+    if target:
+        return type(target).__name__
+    return None
+
+def date_now():
+    return str(datetime.now())
+
+def get_value(target, key, default=None):
+    if target is not None:
+        try:
+            value = target.get(key)
+            if value is not None:
+                return value
+        except:
+            pass
+    return default
+
+def get_random_color(max=5):
+    if max &gt; 5: max = 5                                                             # add support for more than 5 colors
+    colors = [&#39;skyblue&#39;, &#39;darkseagreen&#39;, &#39;palevioletred&#39;, &#39;coral&#39;, &#39;darkgray&#39;]
+    return colors[random_number(0, max-1)]
+
+def is_number(value):
+    try:
+        int(value)
+        return True
+    except:
+        pass
+    return False
+
+def json_dumps(target, message=None):
+    if target:
+        return json.dumps(target, indent=4)
+    return message
+
+def json_format(target, message=None):
+    if target:
+        return json.dumps(target, indent=4)
+    return message
+
+def json_load(target):
+    if target:
+        try:
+            return json.loads(target)
+        except:
+            pass
+    return None
+
+def none_or_empty(target,field):
+    if target:
+        value = target.get(field)
+        return (value is None) or value == &#39;&#39;
+    return True
+
+def object_data(target):
+    #fields = [field for field in dir(target) if not callable(getattr(target, field)) and not field.startswith(&#34;a__&#34;)]
+    return target.__dict__ # this one seems to do the trick (if not look at the code sample above)
+
+
+def random_filename(extension=&#39;.tmp&#39;, length=10):
+    if len(extension) &gt; 0 and  extension[0] != &#39;.&#39; : extension = &#39;.&#39; + extension
+    return &#39;{0}{1}&#39;.format(&#39;&#39;.join(random.choices(string.ascii_lowercase + string.digits, k=length)) ,  extension)
+
+def random_port(min=20000,max=65000):
+    return random_number(min, max)
+
+def random_number(min=1,max=65000):
+    return random.randint(min, max)
+
+def random_string(length=6,prefix=&#39;&#39;):
+    return prefix + &#39;&#39;.join(random.choices(string.ascii_uppercase, k=length))
+
+def random_string_and_numbers(length=6,prefix=&#39;&#39;):
+    return prefix + &#39;&#39;.join(random.choices(string.ascii_uppercase + string.digits, k=length))
+
+def md5(target):
+    if target:
+        return hashlib.md5(&#39;{0}&#39;.format(target).encode()).hexdigest()
+    return None
+
+def random_uuid():
+    return str(uuid.uuid4())
+
+def trim(target):
+    if target:
+        return target.strip()
+    return target
+
+def to_int(value, default=0):
+    try:
+        return int(value)
+    except:
+        return default
+
+def wait(seconds):
+    sleep(seconds)
+
+def word_wrap(text,length = 40):
+    return &#39;\n&#39;.join(textwrap.wrap(text, length))
+
+def word_wrap_escaped(text,length = 40):
+    if text:
+        return &#39;\\n&#39;.join(textwrap.wrap(text, length))
+
+def convert_to_number(value):
+    if value != &#39;&#39;:
+        try:
+            if value[0] == &#39;£&#39;:
+                return float(re.sub(r&#39;[^\d.]&#39;, &#39;&#39;, value))
+            else:
+                return float(value)
+        except:
+          return 0
+    else:
+        return 0
+
+def remove_html_tags(html):
+    if html:
+        TAG_RE = re.compile(r&#39;&lt;[^&gt;]+&gt;&#39;)
+        return TAG_RE.sub(&#39;&#39;, html).replace(&#39;&amp;nbsp;&#39;, &#39; &#39;)
+
+
+def get_field(target, field, default=None):
+    if target is not None:
+        try:
+            value = getattr(target, field)
+            if value is not None:
+                return value
+        except:
+            pass
+    return default
+
+def get_missing_fields(target,field):
+    missing_fields = []
+    for field in field:
+        if get_field(target, field) is None:
+            missing_fields.append(field)
+    return missing_fields
+
+def last_letter(text):
+    if text and (type(text) is str) and len(text) &gt; 0:
+        return text[-1]
+
+def random_bytes(length=24):
+    return token_bytes(length)
+
+
+def random_password(length=24, prefix=&#39;&#39;):
+    password = prefix + &#39;&#39;.join(random.choices(string.ascii_lowercase  +
+                                               string.ascii_uppercase +
+                                               string.punctuation     +
+                                               string.digits          ,
+                                               k=length))
+    # replace these chars with _  (to make prevent errors in command prompts)
+    items = [&#39;&#34;&#39;, &#39;\&#39;&#39;, &#39;`&#39;,&#39;\\&#39;,&#39;}&#39;]
+    for item in items:
+        password = password.replace(item, &#39;_&#39;)
+    return password
+
+def random_text(prefix=None,length=12):
+    if prefix is None: prefix = &#39;text_&#39;
+    if last_letter(prefix) != &#39;_&#39;:
+        prefix += &#39;_&#39;
+    return random_string_and_numbers(length=length, prefix=prefix)
+
+def remove(target_string, string_to_remove):
+    return replace(target_string, string_to_remove, &#39;&#39;)
+
+def replace(target_string, string_to_find, string_to_replace):
+    return target_string.replace(string_to_find, string_to_replace)
+
+def split_lines(text):
+    return text.split(&#39;\n&#39;)
+
+def under_debugger():
+    return &#39;pydevd&#39; in sys.modules</code></pre>
+</details>
+</section>
+<section>
+</section>
+<section>
+</section>
+<section>
+<h2 class="section-title" id="header-functions">Functions</h2>
+<dl>
+<dt id="osbot_utils.utils.Misc.array_add"><code class="name flex">
+<span>def <span class="ident">array_add</span></span>(<span>array: list, value)</span>
+</code></dt>
+<dd>
+<div class="desc"></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">@function_type_check
+def array_add(array : list, value):
+    if value is not None:
+        array.append(value)
+    return value</code></pre>
+</details>
+</dd>
+<dt id="osbot_utils.utils.Misc.array_find"><code class="name flex">
+<span>def <span class="ident">array_find</span></span>(<span>array: list, item)</span>
+</code></dt>
+<dd>
+<div class="desc"></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">@function_type_check
+def array_find(array:list, item):
+    if item in array:
+        return array.index(item)
+    return -1</code></pre>
+</details>
+</dd>
+<dt id="osbot_utils.utils.Misc.array_get"><code class="name flex">
+<span>def <span class="ident">array_get</span></span>(<span>array, position=None, default=None)</span>
+</code></dt>
+<dd>
+<div class="desc"></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def array_get(array, position=None, default=None):
+    if type(array) is list:
+        if type(position) is int and position &gt;=0 :
+            if  len(array) &gt; position:
+                return array[position]
+    return default</code></pre>
+</details>
+</dd>
+<dt id="osbot_utils.utils.Misc.array_pop"><code class="name flex">
+<span>def <span class="ident">array_pop</span></span>(<span>array: list, position=None, default=None)</span>
+</code></dt>
+<dd>
+<div class="desc"></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def array_pop(array:list, position=None, default=None):
+    if array:
+        if len(array) &gt;0:
+            if type(position) is int:
+                if len(array) &gt; position:
+                    return array.pop(position)
+            else:
+                return array.pop()
+    return default</code></pre>
+</details>
+</dd>
+<dt id="osbot_utils.utils.Misc.array_pop_and_trim"><code class="name flex">
+<span>def <span class="ident">array_pop_and_trim</span></span>(<span>array, position=None)</span>
+</code></dt>
+<dd>
+<div class="desc"></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def array_pop_and_trim(array, position=None):
+    value = array_pop(array,position)
+    if type(value) is str:
+        return trim(value)
+    return value</code></pre>
+</details>
+</dd>
+<dt id="osbot_utils.utils.Misc.bytes_to_base64"><code class="name flex">
+<span>def <span class="ident">bytes_to_base64</span></span>(<span>bytes)</span>
+</code></dt>
+<dd>
+<div class="desc"></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def bytes_to_base64(bytes):
+    return base64.b64encode(bytes).decode()</code></pre>
+</details>
+</dd>
+<dt id="osbot_utils.utils.Misc.chunks"><code class="name flex">
+<span>def <span class="ident">chunks</span></span>(<span>items: list, split: int)</span>
+</code></dt>
+<dd>
+<div class="desc"></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def chunks(items:list, split: int):
+    if items and split and split &gt; 0:
+        for i in range(0, len(items), split):
+            yield items[i:i + split]</code></pre>
+</details>
+</dd>
+<dt id="osbot_utils.utils.Misc.class_name"><code class="name flex">
+<span>def <span class="ident">class_name</span></span>(<span>target)</span>
+</code></dt>
+<dd>
+<div class="desc"></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def class_name(target):
+    if target:
+        return type(target).__name__
+    return None</code></pre>
+</details>
+</dd>
+<dt id="osbot_utils.utils.Misc.convert_to_number"><code class="name flex">
+<span>def <span class="ident">convert_to_number</span></span>(<span>value)</span>
+</code></dt>
+<dd>
+<div class="desc"></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def convert_to_number(value):
+    if value != &#39;&#39;:
+        try:
+            if value[0] == &#39;£&#39;:
+                return float(re.sub(r&#39;[^\d.]&#39;, &#39;&#39;, value))
+            else:
+                return float(value)
+        except:
+          return 0
+    else:
+        return 0</code></pre>
+</details>
+</dd>
+<dt id="osbot_utils.utils.Misc.date_now"><code class="name flex">
+<span>def <span class="ident">date_now</span></span>(<span>)</span>
+</code></dt>
+<dd>
+<div class="desc"></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def date_now():
+    return str(datetime.now())</code></pre>
+</details>
+</dd>
+<dt id="osbot_utils.utils.Misc.get_field"><code class="name flex">
+<span>def <span class="ident">get_field</span></span>(<span>target, field, default=None)</span>
+</code></dt>
+<dd>
+<div class="desc"></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def get_field(target, field, default=None):
+    if target is not None:
+        try:
+            value = getattr(target, field)
+            if value is not None:
+                return value
+        except:
+            pass
+    return default</code></pre>
+</details>
+</dd>
+<dt id="osbot_utils.utils.Misc.get_missing_fields"><code class="name flex">
+<span>def <span class="ident">get_missing_fields</span></span>(<span>target, field)</span>
+</code></dt>
+<dd>
+<div class="desc"></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def get_missing_fields(target,field):
+    missing_fields = []
+    for field in field:
+        if get_field(target, field) is None:
+            missing_fields.append(field)
+    return missing_fields</code></pre>
+</details>
+</dd>
+<dt id="osbot_utils.utils.Misc.get_random_color"><code class="name flex">
+<span>def <span class="ident">get_random_color</span></span>(<span>max=5)</span>
+</code></dt>
+<dd>
+<div class="desc"></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def get_random_color(max=5):
+    if max &gt; 5: max = 5                                                             # add support for more than 5 colors
+    colors = [&#39;skyblue&#39;, &#39;darkseagreen&#39;, &#39;palevioletred&#39;, &#39;coral&#39;, &#39;darkgray&#39;]
+    return colors[random_number(0, max-1)]</code></pre>
+</details>
+</dd>
+<dt id="osbot_utils.utils.Misc.get_value"><code class="name flex">
+<span>def <span class="ident">get_value</span></span>(<span>target, key, default=None)</span>
+</code></dt>
+<dd>
+<div class="desc"></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def get_value(target, key, default=None):
+    if target is not None:
+        try:
+            value = target.get(key)
+            if value is not None:
+                return value
+        except:
+            pass
+    return default</code></pre>
+</details>
+</dd>
+<dt id="osbot_utils.utils.Misc.is_number"><code class="name flex">
+<span>def <span class="ident">is_number</span></span>(<span>value)</span>
+</code></dt>
+<dd>
+<div class="desc"></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def is_number(value):
+    try:
+        int(value)
+        return True
+    except:
+        pass
+    return False</code></pre>
+</details>
+</dd>
+<dt id="osbot_utils.utils.Misc.json_dumps"><code class="name flex">
+<span>def <span class="ident">json_dumps</span></span>(<span>target, message=None)</span>
+</code></dt>
+<dd>
+<div class="desc"></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def json_dumps(target, message=None):
+    if target:
+        return json.dumps(target, indent=4)
+    return message</code></pre>
+</details>
+</dd>
+<dt id="osbot_utils.utils.Misc.json_format"><code class="name flex">
+<span>def <span class="ident">json_format</span></span>(<span>target, message=None)</span>
+</code></dt>
+<dd>
+<div class="desc"></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def json_format(target, message=None):
+    if target:
+        return json.dumps(target, indent=4)
+    return message</code></pre>
+</details>
+</dd>
+<dt id="osbot_utils.utils.Misc.json_load"><code class="name flex">
+<span>def <span class="ident">json_load</span></span>(<span>target)</span>
+</code></dt>
+<dd>
+<div class="desc"></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def json_load(target):
+    if target:
+        try:
+            return json.loads(target)
+        except:
+            pass
+    return None</code></pre>
+</details>
+</dd>
+<dt id="osbot_utils.utils.Misc.last_letter"><code class="name flex">
+<span>def <span class="ident">last_letter</span></span>(<span>text)</span>
+</code></dt>
+<dd>
+<div class="desc"></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def last_letter(text):
+    if text and (type(text) is str) and len(text) &gt; 0:
+        return text[-1]</code></pre>
+</details>
+</dd>
+<dt id="osbot_utils.utils.Misc.md5"><code class="name flex">
+<span>def <span class="ident">md5</span></span>(<span>target)</span>
+</code></dt>
+<dd>
+<div class="desc"></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def md5(target):
+    if target:
+        return hashlib.md5(&#39;{0}&#39;.format(target).encode()).hexdigest()
+    return None</code></pre>
+</details>
+</dd>
+<dt id="osbot_utils.utils.Misc.none_or_empty"><code class="name flex">
+<span>def <span class="ident">none_or_empty</span></span>(<span>target, field)</span>
+</code></dt>
+<dd>
+<div class="desc"></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def none_or_empty(target,field):
+    if target:
+        value = target.get(field)
+        return (value is None) or value == &#39;&#39;
+    return True</code></pre>
+</details>
+</dd>
+<dt id="osbot_utils.utils.Misc.object_data"><code class="name flex">
+<span>def <span class="ident">object_data</span></span>(<span>target)</span>
+</code></dt>
+<dd>
+<div class="desc"></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def object_data(target):
+    #fields = [field for field in dir(target) if not callable(getattr(target, field)) and not field.startswith(&#34;a__&#34;)]
+    return target.__dict__ # this one seems to do the trick (if not look at the code sample above)</code></pre>
+</details>
+</dd>
+<dt id="osbot_utils.utils.Misc.random_bytes"><code class="name flex">
+<span>def <span class="ident">random_bytes</span></span>(<span>length=24)</span>
+</code></dt>
+<dd>
+<div class="desc"></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def random_bytes(length=24):
+    return token_bytes(length)</code></pre>
+</details>
+</dd>
+<dt id="osbot_utils.utils.Misc.random_filename"><code class="name flex">
+<span>def <span class="ident">random_filename</span></span>(<span>extension='.tmp', length=10)</span>
+</code></dt>
+<dd>
+<div class="desc"></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def random_filename(extension=&#39;.tmp&#39;, length=10):
+    if len(extension) &gt; 0 and  extension[0] != &#39;.&#39; : extension = &#39;.&#39; + extension
+    return &#39;{0}{1}&#39;.format(&#39;&#39;.join(random.choices(string.ascii_lowercase + string.digits, k=length)) ,  extension)</code></pre>
+</details>
+</dd>
+<dt id="osbot_utils.utils.Misc.random_number"><code class="name flex">
+<span>def <span class="ident">random_number</span></span>(<span>min=1, max=65000)</span>
+</code></dt>
+<dd>
+<div class="desc"></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def random_number(min=1,max=65000):
+    return random.randint(min, max)</code></pre>
+</details>
+</dd>
+<dt id="osbot_utils.utils.Misc.random_password"><code class="name flex">
+<span>def <span class="ident">random_password</span></span>(<span>length=24, prefix='')</span>
+</code></dt>
+<dd>
+<div class="desc"></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def random_password(length=24, prefix=&#39;&#39;):
+    password = prefix + &#39;&#39;.join(random.choices(string.ascii_lowercase  +
+                                               string.ascii_uppercase +
+                                               string.punctuation     +
+                                               string.digits          ,
+                                               k=length))
+    # replace these chars with _  (to make prevent errors in command prompts)
+    items = [&#39;&#34;&#39;, &#39;\&#39;&#39;, &#39;`&#39;,&#39;\\&#39;,&#39;}&#39;]
+    for item in items:
+        password = password.replace(item, &#39;_&#39;)
+    return password</code></pre>
+</details>
+</dd>
+<dt id="osbot_utils.utils.Misc.random_port"><code class="name flex">
+<span>def <span class="ident">random_port</span></span>(<span>min=20000, max=65000)</span>
+</code></dt>
+<dd>
+<div class="desc"></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def random_port(min=20000,max=65000):
+    return random_number(min, max)</code></pre>
+</details>
+</dd>
+<dt id="osbot_utils.utils.Misc.random_string"><code class="name flex">
+<span>def <span class="ident">random_string</span></span>(<span>length=6, prefix='')</span>
+</code></dt>
+<dd>
+<div class="desc"></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def random_string(length=6,prefix=&#39;&#39;):
+    return prefix + &#39;&#39;.join(random.choices(string.ascii_uppercase, k=length))</code></pre>
+</details>
+</dd>
+<dt id="osbot_utils.utils.Misc.random_string_and_numbers"><code class="name flex">
+<span>def <span class="ident">random_string_and_numbers</span></span>(<span>length=6, prefix='')</span>
+</code></dt>
+<dd>
+<div class="desc"></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def random_string_and_numbers(length=6,prefix=&#39;&#39;):
+    return prefix + &#39;&#39;.join(random.choices(string.ascii_uppercase + string.digits, k=length))</code></pre>
+</details>
+</dd>
+<dt id="osbot_utils.utils.Misc.random_text"><code class="name flex">
+<span>def <span class="ident">random_text</span></span>(<span>prefix=None, length=12)</span>
+</code></dt>
+<dd>
+<div class="desc"></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def random_text(prefix=None,length=12):
+    if prefix is None: prefix = &#39;text_&#39;
+    if last_letter(prefix) != &#39;_&#39;:
+        prefix += &#39;_&#39;
+    return random_string_and_numbers(length=length, prefix=prefix)</code></pre>
+</details>
+</dd>
+<dt id="osbot_utils.utils.Misc.random_uuid"><code class="name flex">
+<span>def <span class="ident">random_uuid</span></span>(<span>)</span>
+</code></dt>
+<dd>
+<div class="desc"></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def random_uuid():
+    return str(uuid.uuid4())</code></pre>
+</details>
+</dd>
+<dt id="osbot_utils.utils.Misc.remove"><code class="name flex">
+<span>def <span class="ident">remove</span></span>(<span>target_string, string_to_remove)</span>
+</code></dt>
+<dd>
+<div class="desc"></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def remove(target_string, string_to_remove):
+    return replace(target_string, string_to_remove, &#39;&#39;)</code></pre>
+</details>
+</dd>
+<dt id="osbot_utils.utils.Misc.remove_html_tags"><code class="name flex">
+<span>def <span class="ident">remove_html_tags</span></span>(<span>html)</span>
+</code></dt>
+<dd>
+<div class="desc"></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def remove_html_tags(html):
+    if html:
+        TAG_RE = re.compile(r&#39;&lt;[^&gt;]+&gt;&#39;)
+        return TAG_RE.sub(&#39;&#39;, html).replace(&#39;&amp;nbsp;&#39;, &#39; &#39;)</code></pre>
+</details>
+</dd>
+<dt id="osbot_utils.utils.Misc.replace"><code class="name flex">
+<span>def <span class="ident">replace</span></span>(<span>target_string, string_to_find, string_to_replace)</span>
+</code></dt>
+<dd>
+<div class="desc"></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def replace(target_string, string_to_find, string_to_replace):
+    return target_string.replace(string_to_find, string_to_replace)</code></pre>
+</details>
+</dd>
+<dt id="osbot_utils.utils.Misc.split_lines"><code class="name flex">
+<span>def <span class="ident">split_lines</span></span>(<span>text)</span>
+</code></dt>
+<dd>
+<div class="desc"></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def split_lines(text):
+    return text.split(&#39;\n&#39;)</code></pre>
+</details>
+</dd>
+<dt id="osbot_utils.utils.Misc.to_int"><code class="name flex">
+<span>def <span class="ident">to_int</span></span>(<span>value, default=0)</span>
+</code></dt>
+<dd>
+<div class="desc"></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def to_int(value, default=0):
+    try:
+        return int(value)
+    except:
+        return default</code></pre>
+</details>
+</dd>
+<dt id="osbot_utils.utils.Misc.trim"><code class="name flex">
+<span>def <span class="ident">trim</span></span>(<span>target)</span>
+</code></dt>
+<dd>
+<div class="desc"></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def trim(target):
+    if target:
+        return target.strip()
+    return target</code></pre>
+</details>
+</dd>
+<dt id="osbot_utils.utils.Misc.under_debugger"><code class="name flex">
+<span>def <span class="ident">under_debugger</span></span>(<span>)</span>
+</code></dt>
+<dd>
+<div class="desc"></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def under_debugger():
+    return &#39;pydevd&#39; in sys.modules</code></pre>
+</details>
+</dd>
+<dt id="osbot_utils.utils.Misc.wait"><code class="name flex">
+<span>def <span class="ident">wait</span></span>(<span>seconds)</span>
+</code></dt>
+<dd>
+<div class="desc"></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def wait(seconds):
+    sleep(seconds)</code></pre>
+</details>
+</dd>
+<dt id="osbot_utils.utils.Misc.word_wrap"><code class="name flex">
+<span>def <span class="ident">word_wrap</span></span>(<span>text, length=40)</span>
+</code></dt>
+<dd>
+<div class="desc"></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def word_wrap(text,length = 40):
+    return &#39;\n&#39;.join(textwrap.wrap(text, length))</code></pre>
+</details>
+</dd>
+<dt id="osbot_utils.utils.Misc.word_wrap_escaped"><code class="name flex">
+<span>def <span class="ident">word_wrap_escaped</span></span>(<span>text, length=40)</span>
+</code></dt>
+<dd>
+<div class="desc"></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def word_wrap_escaped(text,length = 40):
+    if text:
+        return &#39;\\n&#39;.join(textwrap.wrap(text, length))</code></pre>
+</details>
+</dd>
+</dl>
+</section>
+<section>
+</section>
+</article>
+<nav id="sidebar">
+<h1>Index</h1>
+<div class="toc">
+<ul></ul>
+</div>
+<ul id="index">
+<li><h3>Super-module</h3>
+<ul>
+<li><code><a title="osbot_utils.utils" href="index.html">osbot_utils.utils</a></code></li>
+</ul>
+</li>
+<li><h3><a href="#header-functions">Functions</a></h3>
+<ul class="">
+<li><code><a title="osbot_utils.utils.Misc.array_add" href="#osbot_utils.utils.Misc.array_add">array_add</a></code></li>
+<li><code><a title="osbot_utils.utils.Misc.array_find" href="#osbot_utils.utils.Misc.array_find">array_find</a></code></li>
+<li><code><a title="osbot_utils.utils.Misc.array_get" href="#osbot_utils.utils.Misc.array_get">array_get</a></code></li>
+<li><code><a title="osbot_utils.utils.Misc.array_pop" href="#osbot_utils.utils.Misc.array_pop">array_pop</a></code></li>
+<li><code><a title="osbot_utils.utils.Misc.array_pop_and_trim" href="#osbot_utils.utils.Misc.array_pop_and_trim">array_pop_and_trim</a></code></li>
+<li><code><a title="osbot_utils.utils.Misc.bytes_to_base64" href="#osbot_utils.utils.Misc.bytes_to_base64">bytes_to_base64</a></code></li>
+<li><code><a title="osbot_utils.utils.Misc.chunks" href="#osbot_utils.utils.Misc.chunks">chunks</a></code></li>
+<li><code><a title="osbot_utils.utils.Misc.class_name" href="#osbot_utils.utils.Misc.class_name">class_name</a></code></li>
+<li><code><a title="osbot_utils.utils.Misc.convert_to_number" href="#osbot_utils.utils.Misc.convert_to_number">convert_to_number</a></code></li>
+<li><code><a title="osbot_utils.utils.Misc.date_now" href="#osbot_utils.utils.Misc.date_now">date_now</a></code></li>
+<li><code><a title="osbot_utils.utils.Misc.get_field" href="#osbot_utils.utils.Misc.get_field">get_field</a></code></li>
+<li><code><a title="osbot_utils.utils.Misc.get_missing_fields" href="#osbot_utils.utils.Misc.get_missing_fields">get_missing_fields</a></code></li>
+<li><code><a title="osbot_utils.utils.Misc.get_random_color" href="#osbot_utils.utils.Misc.get_random_color">get_random_color</a></code></li>
+<li><code><a title="osbot_utils.utils.Misc.get_value" href="#osbot_utils.utils.Misc.get_value">get_value</a></code></li>
+<li><code><a title="osbot_utils.utils.Misc.is_number" href="#osbot_utils.utils.Misc.is_number">is_number</a></code></li>
+<li><code><a title="osbot_utils.utils.Misc.json_dumps" href="#osbot_utils.utils.Misc.json_dumps">json_dumps</a></code></li>
+<li><code><a title="osbot_utils.utils.Misc.json_format" href="#osbot_utils.utils.Misc.json_format">json_format</a></code></li>
+<li><code><a title="osbot_utils.utils.Misc.json_load" href="#osbot_utils.utils.Misc.json_load">json_load</a></code></li>
+<li><code><a title="osbot_utils.utils.Misc.last_letter" href="#osbot_utils.utils.Misc.last_letter">last_letter</a></code></li>
+<li><code><a title="osbot_utils.utils.Misc.md5" href="#osbot_utils.utils.Misc.md5">md5</a></code></li>
+<li><code><a title="osbot_utils.utils.Misc.none_or_empty" href="#osbot_utils.utils.Misc.none_or_empty">none_or_empty</a></code></li>
+<li><code><a title="osbot_utils.utils.Misc.object_data" href="#osbot_utils.utils.Misc.object_data">object_data</a></code></li>
+<li><code><a title="osbot_utils.utils.Misc.random_bytes" href="#osbot_utils.utils.Misc.random_bytes">random_bytes</a></code></li>
+<li><code><a title="osbot_utils.utils.Misc.random_filename" href="#osbot_utils.utils.Misc.random_filename">random_filename</a></code></li>
+<li><code><a title="osbot_utils.utils.Misc.random_number" href="#osbot_utils.utils.Misc.random_number">random_number</a></code></li>
+<li><code><a title="osbot_utils.utils.Misc.random_password" href="#osbot_utils.utils.Misc.random_password">random_password</a></code></li>
+<li><code><a title="osbot_utils.utils.Misc.random_port" href="#osbot_utils.utils.Misc.random_port">random_port</a></code></li>
+<li><code><a title="osbot_utils.utils.Misc.random_string" href="#osbot_utils.utils.Misc.random_string">random_string</a></code></li>
+<li><code><a title="osbot_utils.utils.Misc.random_string_and_numbers" href="#osbot_utils.utils.Misc.random_string_and_numbers">random_string_and_numbers</a></code></li>
+<li><code><a title="osbot_utils.utils.Misc.random_text" href="#osbot_utils.utils.Misc.random_text">random_text</a></code></li>
+<li><code><a title="osbot_utils.utils.Misc.random_uuid" href="#osbot_utils.utils.Misc.random_uuid">random_uuid</a></code></li>
+<li><code><a title="osbot_utils.utils.Misc.remove" href="#osbot_utils.utils.Misc.remove">remove</a></code></li>
+<li><code><a title="osbot_utils.utils.Misc.remove_html_tags" href="#osbot_utils.utils.Misc.remove_html_tags">remove_html_tags</a></code></li>
+<li><code><a title="osbot_utils.utils.Misc.replace" href="#osbot_utils.utils.Misc.replace">replace</a></code></li>
+<li><code><a title="osbot_utils.utils.Misc.split_lines" href="#osbot_utils.utils.Misc.split_lines">split_lines</a></code></li>
+<li><code><a title="osbot_utils.utils.Misc.to_int" href="#osbot_utils.utils.Misc.to_int">to_int</a></code></li>
+<li><code><a title="osbot_utils.utils.Misc.trim" href="#osbot_utils.utils.Misc.trim">trim</a></code></li>
+<li><code><a title="osbot_utils.utils.Misc.under_debugger" href="#osbot_utils.utils.Misc.under_debugger">under_debugger</a></code></li>
+<li><code><a title="osbot_utils.utils.Misc.wait" href="#osbot_utils.utils.Misc.wait">wait</a></code></li>
+<li><code><a title="osbot_utils.utils.Misc.word_wrap" href="#osbot_utils.utils.Misc.word_wrap">word_wrap</a></code></li>
+<li><code><a title="osbot_utils.utils.Misc.word_wrap_escaped" href="#osbot_utils.utils.Misc.word_wrap_escaped">word_wrap_escaped</a></code></li>
+</ul>
+</li>
+</ul>
+</nav>
+</main>
+<footer id="footer">
+<p>Generated by <a href="https://pdoc3.github.io/pdoc"><cite>pdoc</cite> 0.9.2</a>.</p>
+</footer>
+</body>
+</html>
