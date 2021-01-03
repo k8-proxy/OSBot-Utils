@@ -29,97 +29,90 @@
 <pre><code class="python">import json
 import socket
 import ssl
-from urllib.error import HTTPError
 from   urllib.request import Request, urlopen
 
-from osbot_utils.utils.Files import save_bytes_as_file
+from osbot_utils.utils.Files import save_bytes_as_file, file_size, file_bytes, file_open_bytes
 
 
-def DELETE(url, data=&#39;&#39;, headers={}):
-    return Http_Request(url, data, headers, &#39;DELETE&#39;)
-
-def GET(url,headers = None, encoding=&#39;utf-8&#39;):
-    return Http_Request(url, headers=headers, method=&#39;GET&#39;, encoding=encoding)
-
-def GET_bytes_to_file(url,path=None,headers=None,):
+def current_host_online(url_to_use=&#39;http://www.google.com&#39;):
     try:
-        file_bytes = GET(url, headers=headers, encoding=None)
-        return save_bytes_as_file(file_bytes, path)
-    except HTTPError:
-        return None
-
-
-def GET_Json(*args, **kwargs):
-    return json.loads(GET(*args, **kwargs))
-
-def OPTIONS(url,headers = {}, encoding = &#39;utf-8&#39;):
-    return Http_Request(url, headers=headers, method=&#39;OPTIONS&#39;, encoding=encoding)
-
-
-def POST(url, data=&#39;&#39;, headers={}):
-    return Http_Request(url, data, headers, &#39;POST&#39;)
-
-
-def PUT(url, data=&#39;&#39;, headers={}):
-    return Http_Request(url, data, headers, &#39;PUT&#39;)
-
-
-def Http_Request(url, data=&#39;&#39;, headers=None, method=&#39;POST&#39;, encoding = &#39;utf-8&#39; ):
-    headers = headers or {}
-    gcontext = ssl.SSLContext(ssl.PROTOCOL_TLSv1_2)
-    request  = Request(url, data.encode(), headers=headers)
-    request.get_method = lambda: method
-    data = urlopen(request, context=gcontext).read()
-    if encoding:
-        return data.decode(encoding)
-    return data
-
-def port_is_open(port : int , host=&#39;0.0.0.0&#39;):
-    sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-    result = sock.connect_ex((host, port))
-    return result == 0
-
-def port_is_not_open(port, host=&#39;0.0.0.0&#39;):
-    return port_is_open(port, host) is False
-
-
-def current_host_online():
-    try:
-        Http_Request(&#39;http://www.google.com&#39;, method=&#39;HEAD&#39;)
+        Http_Request(url_to_use, method=&#39;HEAD&#39;)
         return True
     except:
         return False
 
+def dns_ip_address(host):
+    return socket.gethostbyname(host)
 
-# code below is not reliable enough (was trying to get the time from an ntp server, but it hanged a couple times during tests)
-# note: this could had been caused by VPN issues (I was having at the time with the Cisco VPN client)
-# def gettime_ntp(self, ntp_server=&#39;0.uk.pool.ntp.org&#39;):
-#     #ntp_server = &#39;europe.pool.ntp.org&#39;
-#     # based on http://code.activestate.com/recipes/117211-simple-very-sntp-client/
-#     import struct
-#     import sys
-#     import time
-#
-#     TIME1970 = 2208988800  # Thanks to F.Lundh
-#
-#     from _socket import AF_INET
-#     from _socket import SOCK_DGRAM
-#     from socket import socket
-#     client = socket(AF_INET, SOCK_DGRAM)
-#     data = &#39;\x1b&#39; + 47 * &#39;\0&#39;
-#     client.sendto(data.encode(), (ntp_server, 123))
-#     client.settimeout(2)
-#     data, address = client.recvfrom(1024)
-#     if data:
-#         print(&#39;Response received from:&#39;, address)
-#         t = struct.unpack(&#39;!12I&#39;, data)[10]
-#         t -= TIME1970
-#         date = time.ctime(t)
-#
-#
-#         when = strftime(&#34;%Y/%m/%d %H:%M&#34;, localtime(t))
-#         print(when)
-#         print(&#39;\tTime=%s&#39; % time.ctime(t))</code></pre>
+def DELETE(url, data=None, headers=None):
+    return Http_Request(url, data, headers, &#39;DELETE&#39;)
+
+def DELETE_json(*args, **kwargs):
+    return json.loads(DELETE(*args, **kwargs))
+
+def GET(url,headers = None, encoding=&#39;utf-8&#39;):
+    return Http_Request(url, headers=headers, method=&#39;GET&#39;, encoding=encoding)
+
+def GET_bytes(url, headers=None):
+    return GET(url, headers=headers, encoding=None)
+
+def GET_bytes_to_file(url,path, headers = None):
+    file_bytes = GET_bytes(url, headers)
+    return save_bytes_as_file(file_bytes, path)
+
+def GET_json(*args, **kwargs):
+    return json.loads(GET(*args, **kwargs))
+
+def OPTIONS(url,headers = None):
+    response = Http_Request(url, headers=headers, method=&#39;OPTIONS&#39;,return_response_object=True)
+    response_headers  = {}
+    for response_header in response.getheaders():
+        (name,value) = response_header
+        response_headers[name] = value
+    return response_headers
+
+def POST(url, data=&#39;&#39;, headers=None):
+    return Http_Request(url, data, headers, &#39;POST&#39;)
+
+def POST_json(*args, **kwargs):
+    return json.loads(POST(*args, **kwargs))
+
+def PUT(url, data=&#39;&#39;, headers=None):
+    return Http_Request(url, data, headers, &#39;PUT&#39;)
+
+def PUT_json(*args, **kwargs):
+    return json.loads(PUT(*args, **kwargs))
+
+def Http_Request(url, data=None, headers=None, method=&#39;GET&#39;, encoding = &#39;utf-8&#39;, return_response_object=False):
+    headers = headers or {}
+    gcontext = ssl.SSLContext(ssl.PROTOCOL_TLSv1_2)
+    if data:
+        print()
+        if type(data) is not str:                                   # if the data object is not a string
+            if headers.get(&#39;Content-Type&#39;) == &#34;application/json&#34;:   # and a json payload is expected
+                data = json.dumps(data)                             # convert it to json
+        if type(data) is str:                                       # only convert to bytes if current data is a string
+            data = data.encode()
+    request  = Request(url, data=data, headers=headers)
+    request.get_method = lambda: method
+    response = urlopen(request, context=gcontext)
+
+    if return_response_object:
+        return response
+    else:
+        result = response.read()
+        if encoding:
+            return result.decode(encoding)
+        return result
+
+def port_is_open(port : int , host=&#39;0.0.0.0&#39;, timeout=1.0):
+    sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+    sock.settimeout(timeout)
+    result = sock.connect_ex((host, port))
+    return result == 0
+
+def port_is_not_open(port, host=&#39;0.0.0.0&#39;, timeout=1.0):
+    return port_is_open(port, host,timeout) is False</code></pre>
 </details>
 </section>
 <section>
@@ -130,7 +123,7 @@ def current_host_online():
 <h2 class="section-title" id="header-functions">Functions</h2>
 <dl>
 <dt id="osbot_utils.utils.Http.DELETE"><code class="name flex">
-<span>def <span class="ident">DELETE</span></span>(<span>url, data='', headers={})</span>
+<span>def <span class="ident">DELETE</span></span>(<span>url, data=None, headers=None)</span>
 </code></dt>
 <dd>
 <div class="desc"></div>
@@ -138,8 +131,21 @@ def current_host_online():
 <summary>
 <span>Expand source code</span>
 </summary>
-<pre><code class="python">def DELETE(url, data=&#39;&#39;, headers={}):
+<pre><code class="python">def DELETE(url, data=None, headers=None):
     return Http_Request(url, data, headers, &#39;DELETE&#39;)</code></pre>
+</details>
+</dd>
+<dt id="osbot_utils.utils.Http.DELETE_json"><code class="name flex">
+<span>def <span class="ident">DELETE_json</span></span>(<span>*args, **kwargs)</span>
+</code></dt>
+<dd>
+<div class="desc"></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def DELETE_json(*args, **kwargs):
+    return json.loads(DELETE(*args, **kwargs))</code></pre>
 </details>
 </dd>
 <dt id="osbot_utils.utils.Http.GET"><code class="name flex">
@@ -155,8 +161,8 @@ def current_host_online():
     return Http_Request(url, headers=headers, method=&#39;GET&#39;, encoding=encoding)</code></pre>
 </details>
 </dd>
-<dt id="osbot_utils.utils.Http.GET_Json"><code class="name flex">
-<span>def <span class="ident">GET_Json</span></span>(<span>*args, **kwargs)</span>
+<dt id="osbot_utils.utils.Http.GET_bytes"><code class="name flex">
+<span>def <span class="ident">GET_bytes</span></span>(<span>url, headers=None)</span>
 </code></dt>
 <dd>
 <div class="desc"></div>
@@ -164,12 +170,12 @@ def current_host_online():
 <summary>
 <span>Expand source code</span>
 </summary>
-<pre><code class="python">def GET_Json(*args, **kwargs):
-    return json.loads(GET(*args, **kwargs))</code></pre>
+<pre><code class="python">def GET_bytes(url, headers=None):
+    return GET(url, headers=headers, encoding=None)</code></pre>
 </details>
 </dd>
 <dt id="osbot_utils.utils.Http.GET_bytes_to_file"><code class="name flex">
-<span>def <span class="ident">GET_bytes_to_file</span></span>(<span>url, path=None, headers=None)</span>
+<span>def <span class="ident">GET_bytes_to_file</span></span>(<span>url, path, headers=None)</span>
 </code></dt>
 <dd>
 <div class="desc"></div>
@@ -177,16 +183,26 @@ def current_host_online():
 <summary>
 <span>Expand source code</span>
 </summary>
-<pre><code class="python">def GET_bytes_to_file(url,path=None,headers=None,):
-    try:
-        file_bytes = GET(url, headers=headers, encoding=None)
-        return save_bytes_as_file(file_bytes, path)
-    except HTTPError:
-        return None</code></pre>
+<pre><code class="python">def GET_bytes_to_file(url,path, headers = None):
+    file_bytes = GET_bytes(url, headers)
+    return save_bytes_as_file(file_bytes, path)</code></pre>
+</details>
+</dd>
+<dt id="osbot_utils.utils.Http.GET_json"><code class="name flex">
+<span>def <span class="ident">GET_json</span></span>(<span>*args, **kwargs)</span>
+</code></dt>
+<dd>
+<div class="desc"></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def GET_json(*args, **kwargs):
+    return json.loads(GET(*args, **kwargs))</code></pre>
 </details>
 </dd>
 <dt id="osbot_utils.utils.Http.Http_Request"><code class="name flex">
-<span>def <span class="ident">Http_Request</span></span>(<span>url, data='', headers=None, method='POST', encoding='utf-8')</span>
+<span>def <span class="ident">Http_Request</span></span>(<span>url, data=None, headers=None, method='GET', encoding='utf-8', return_response_object=False)</span>
 </code></dt>
 <dd>
 <div class="desc"></div>
@@ -194,19 +210,31 @@ def current_host_online():
 <summary>
 <span>Expand source code</span>
 </summary>
-<pre><code class="python">def Http_Request(url, data=&#39;&#39;, headers=None, method=&#39;POST&#39;, encoding = &#39;utf-8&#39; ):
+<pre><code class="python">def Http_Request(url, data=None, headers=None, method=&#39;GET&#39;, encoding = &#39;utf-8&#39;, return_response_object=False):
     headers = headers or {}
     gcontext = ssl.SSLContext(ssl.PROTOCOL_TLSv1_2)
-    request  = Request(url, data.encode(), headers=headers)
+    if data:
+        print()
+        if type(data) is not str:                                   # if the data object is not a string
+            if headers.get(&#39;Content-Type&#39;) == &#34;application/json&#34;:   # and a json payload is expected
+                data = json.dumps(data)                             # convert it to json
+        if type(data) is str:                                       # only convert to bytes if current data is a string
+            data = data.encode()
+    request  = Request(url, data=data, headers=headers)
     request.get_method = lambda: method
-    data = urlopen(request, context=gcontext).read()
-    if encoding:
-        return data.decode(encoding)
-    return data</code></pre>
+    response = urlopen(request, context=gcontext)
+
+    if return_response_object:
+        return response
+    else:
+        result = response.read()
+        if encoding:
+            return result.decode(encoding)
+        return result</code></pre>
 </details>
 </dd>
 <dt id="osbot_utils.utils.Http.OPTIONS"><code class="name flex">
-<span>def <span class="ident">OPTIONS</span></span>(<span>url, headers={}, encoding='utf-8')</span>
+<span>def <span class="ident">OPTIONS</span></span>(<span>url, headers=None)</span>
 </code></dt>
 <dd>
 <div class="desc"></div>
@@ -214,12 +242,17 @@ def current_host_online():
 <summary>
 <span>Expand source code</span>
 </summary>
-<pre><code class="python">def OPTIONS(url,headers = {}, encoding = &#39;utf-8&#39;):
-    return Http_Request(url, headers=headers, method=&#39;OPTIONS&#39;, encoding=encoding)</code></pre>
+<pre><code class="python">def OPTIONS(url,headers = None):
+    response = Http_Request(url, headers=headers, method=&#39;OPTIONS&#39;,return_response_object=True)
+    response_headers  = {}
+    for response_header in response.getheaders():
+        (name,value) = response_header
+        response_headers[name] = value
+    return response_headers</code></pre>
 </details>
 </dd>
 <dt id="osbot_utils.utils.Http.POST"><code class="name flex">
-<span>def <span class="ident">POST</span></span>(<span>url, data='', headers={})</span>
+<span>def <span class="ident">POST</span></span>(<span>url, data='', headers=None)</span>
 </code></dt>
 <dd>
 <div class="desc"></div>
@@ -227,12 +260,12 @@ def current_host_online():
 <summary>
 <span>Expand source code</span>
 </summary>
-<pre><code class="python">def POST(url, data=&#39;&#39;, headers={}):
+<pre><code class="python">def POST(url, data=&#39;&#39;, headers=None):
     return Http_Request(url, data, headers, &#39;POST&#39;)</code></pre>
 </details>
 </dd>
-<dt id="osbot_utils.utils.Http.PUT"><code class="name flex">
-<span>def <span class="ident">PUT</span></span>(<span>url, data='', headers={})</span>
+<dt id="osbot_utils.utils.Http.POST_json"><code class="name flex">
+<span>def <span class="ident">POST_json</span></span>(<span>*args, **kwargs)</span>
 </code></dt>
 <dd>
 <div class="desc"></div>
@@ -240,12 +273,25 @@ def current_host_online():
 <summary>
 <span>Expand source code</span>
 </summary>
-<pre><code class="python">def PUT(url, data=&#39;&#39;, headers={}):
+<pre><code class="python">def POST_json(*args, **kwargs):
+    return json.loads(POST(*args, **kwargs))</code></pre>
+</details>
+</dd>
+<dt id="osbot_utils.utils.Http.PUT"><code class="name flex">
+<span>def <span class="ident">PUT</span></span>(<span>url, data='', headers=None)</span>
+</code></dt>
+<dd>
+<div class="desc"></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def PUT(url, data=&#39;&#39;, headers=None):
     return Http_Request(url, data, headers, &#39;PUT&#39;)</code></pre>
 </details>
 </dd>
-<dt id="osbot_utils.utils.Http.current_host_online"><code class="name flex">
-<span>def <span class="ident">current_host_online</span></span>(<span>)</span>
+<dt id="osbot_utils.utils.Http.PUT_json"><code class="name flex">
+<span>def <span class="ident">PUT_json</span></span>(<span>*args, **kwargs)</span>
 </code></dt>
 <dd>
 <div class="desc"></div>
@@ -253,16 +299,29 @@ def current_host_online():
 <summary>
 <span>Expand source code</span>
 </summary>
-<pre><code class="python">def current_host_online():
+<pre><code class="python">def PUT_json(*args, **kwargs):
+    return json.loads(PUT(*args, **kwargs))</code></pre>
+</details>
+</dd>
+<dt id="osbot_utils.utils.Http.current_host_online"><code class="name flex">
+<span>def <span class="ident">current_host_online</span></span>(<span>url_to_use='http://www.google.com')</span>
+</code></dt>
+<dd>
+<div class="desc"></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def current_host_online(url_to_use=&#39;http://www.google.com&#39;):
     try:
-        Http_Request(&#39;http://www.google.com&#39;, method=&#39;HEAD&#39;)
+        Http_Request(url_to_use, method=&#39;HEAD&#39;)
         return True
     except:
         return False</code></pre>
 </details>
 </dd>
-<dt id="osbot_utils.utils.Http.port_is_not_open"><code class="name flex">
-<span>def <span class="ident">port_is_not_open</span></span>(<span>port, host='0.0.0.0')</span>
+<dt id="osbot_utils.utils.Http.dns_ip_address"><code class="name flex">
+<span>def <span class="ident">dns_ip_address</span></span>(<span>host)</span>
 </code></dt>
 <dd>
 <div class="desc"></div>
@@ -270,12 +329,25 @@ def current_host_online():
 <summary>
 <span>Expand source code</span>
 </summary>
-<pre><code class="python">def port_is_not_open(port, host=&#39;0.0.0.0&#39;):
-    return port_is_open(port, host) is False</code></pre>
+<pre><code class="python">def dns_ip_address(host):
+    return socket.gethostbyname(host)</code></pre>
+</details>
+</dd>
+<dt id="osbot_utils.utils.Http.port_is_not_open"><code class="name flex">
+<span>def <span class="ident">port_is_not_open</span></span>(<span>port, host='0.0.0.0', timeout=1.0)</span>
+</code></dt>
+<dd>
+<div class="desc"></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def port_is_not_open(port, host=&#39;0.0.0.0&#39;, timeout=1.0):
+    return port_is_open(port, host,timeout) is False</code></pre>
 </details>
 </dd>
 <dt id="osbot_utils.utils.Http.port_is_open"><code class="name flex">
-<span>def <span class="ident">port_is_open</span></span>(<span>port: int, host='0.0.0.0')</span>
+<span>def <span class="ident">port_is_open</span></span>(<span>port: int, host='0.0.0.0', timeout=1.0)</span>
 </code></dt>
 <dd>
 <div class="desc"></div>
@@ -283,8 +355,9 @@ def current_host_online():
 <summary>
 <span>Expand source code</span>
 </summary>
-<pre><code class="python">def port_is_open(port : int , host=&#39;0.0.0.0&#39;):
+<pre><code class="python">def port_is_open(port : int , host=&#39;0.0.0.0&#39;, timeout=1.0):
     sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+    sock.settimeout(timeout)
     result = sock.connect_ex((host, port))
     return result == 0</code></pre>
 </details>
@@ -308,14 +381,19 @@ def current_host_online():
 <li><h3><a href="#header-functions">Functions</a></h3>
 <ul class="two-column">
 <li><code><a title="osbot_utils.utils.Http.DELETE" href="#osbot_utils.utils.Http.DELETE">DELETE</a></code></li>
+<li><code><a title="osbot_utils.utils.Http.DELETE_json" href="#osbot_utils.utils.Http.DELETE_json">DELETE_json</a></code></li>
 <li><code><a title="osbot_utils.utils.Http.GET" href="#osbot_utils.utils.Http.GET">GET</a></code></li>
-<li><code><a title="osbot_utils.utils.Http.GET_Json" href="#osbot_utils.utils.Http.GET_Json">GET_Json</a></code></li>
+<li><code><a title="osbot_utils.utils.Http.GET_bytes" href="#osbot_utils.utils.Http.GET_bytes">GET_bytes</a></code></li>
 <li><code><a title="osbot_utils.utils.Http.GET_bytes_to_file" href="#osbot_utils.utils.Http.GET_bytes_to_file">GET_bytes_to_file</a></code></li>
+<li><code><a title="osbot_utils.utils.Http.GET_json" href="#osbot_utils.utils.Http.GET_json">GET_json</a></code></li>
 <li><code><a title="osbot_utils.utils.Http.Http_Request" href="#osbot_utils.utils.Http.Http_Request">Http_Request</a></code></li>
 <li><code><a title="osbot_utils.utils.Http.OPTIONS" href="#osbot_utils.utils.Http.OPTIONS">OPTIONS</a></code></li>
 <li><code><a title="osbot_utils.utils.Http.POST" href="#osbot_utils.utils.Http.POST">POST</a></code></li>
+<li><code><a title="osbot_utils.utils.Http.POST_json" href="#osbot_utils.utils.Http.POST_json">POST_json</a></code></li>
 <li><code><a title="osbot_utils.utils.Http.PUT" href="#osbot_utils.utils.Http.PUT">PUT</a></code></li>
+<li><code><a title="osbot_utils.utils.Http.PUT_json" href="#osbot_utils.utils.Http.PUT_json">PUT_json</a></code></li>
 <li><code><a title="osbot_utils.utils.Http.current_host_online" href="#osbot_utils.utils.Http.current_host_online">current_host_online</a></code></li>
+<li><code><a title="osbot_utils.utils.Http.dns_ip_address" href="#osbot_utils.utils.Http.dns_ip_address">dns_ip_address</a></code></li>
 <li><code><a title="osbot_utils.utils.Http.port_is_not_open" href="#osbot_utils.utils.Http.port_is_not_open">port_is_not_open</a></code></li>
 <li><code><a title="osbot_utils.utils.Http.port_is_open" href="#osbot_utils.utils.Http.port_is_open">port_is_open</a></code></li>
 </ul>

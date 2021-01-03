@@ -169,6 +169,14 @@ class Files:
         return os.path.exists(path) is False
 
     @staticmethod
+    def open(path, mode=&#39;r&#39;):
+        return open(path, mode=mode)
+
+    @staticmethod
+    def open_bytes(path):
+        return Files.open(path, mode=&#39;rb&#39;)
+
+    @staticmethod
     def parent_folder(path):
         return os.path.dirname(path)
 
@@ -219,12 +227,16 @@ class Files:
         return folder
 
     @staticmethod
-    def write(path = None,contents=None):
-        path     = path or temp_file()
+    def write(path = None,contents=None, extension=None, mode=&#39;w&#39;):
+        path     = path or temp_file(extension)
         contents = contents or &#39;&#39;
-        with open(path, &#34;w&#34;) as file:
+        with open(file=path, mode=mode) as file:
             file.write(contents)
         return path
+
+    @staticmethod
+    def write_bytes(path=None, contents=None, extension=None):
+        return Files.write(path=path, contents=contents, extension=extension, mode=&#39;wb&#39;)
 
     @staticmethod
     def write_gz(path=None, contents=None):
@@ -279,6 +291,7 @@ file_contents_as_bytes      = Files.bytes
 file_copy                   = Files.copy
 file_delete                 = Files.delete
 file_create                 = Files.write
+file_create_bytes           = Files.write_bytes
 file_create_gz              = Files.write_gz
 file_exists                 = Files.exists
 file_extension              = Files.file_extension
@@ -288,10 +301,13 @@ file_lines                  = Files.lines
 file_lines_gz               = Files.lines_gz
 file_name                   = Files.file_name
 file_not_exists             = Files.not_exists
+file_open                   = Files.open
+file_open_bytes             = Files.open_bytes
 file_save                   = Files.save
 file_size                   = Files.file_size
 file_stats                  = Files.file_stats
 file_write                  = Files.write
+file_write_bytes            = Files.write_bytes
 file_write_gz               = Files.write_gz
 file_unzip                  = Files.unzip_file
 
@@ -426,7 +442,7 @@ def copy(source:str, destination:str) -&gt; str:
 </details>
 </dd>
 <dt id="osbot_utils.utils.Files.file_create"><code class="name flex">
-<span>def <span class="ident">file_create</span></span>(<span>path=None, contents=None)</span>
+<span>def <span class="ident">file_create</span></span>(<span>path=None, contents=None, extension=None, mode='w')</span>
 </code></dt>
 <dd>
 <div class="desc"></div>
@@ -435,12 +451,26 @@ def copy(source:str, destination:str) -&gt; str:
 <span>Expand source code</span>
 </summary>
 <pre><code class="python">@staticmethod
-def write(path = None,contents=None):
-    path     = path or temp_file()
+def write(path = None,contents=None, extension=None, mode=&#39;w&#39;):
+    path     = path or temp_file(extension)
     contents = contents or &#39;&#39;
-    with open(path, &#34;w&#34;) as file:
+    with open(file=path, mode=mode) as file:
         file.write(contents)
     return path</code></pre>
+</details>
+</dd>
+<dt id="osbot_utils.utils.Files.file_create_bytes"><code class="name flex">
+<span>def <span class="ident">file_create_bytes</span></span>(<span>path=None, contents=None, extension=None)</span>
+</code></dt>
+<dd>
+<div class="desc"></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">@staticmethod
+def write_bytes(path=None, contents=None, extension=None):
+    return Files.write(path=path, contents=contents, extension=extension, mode=&#39;wb&#39;)</code></pre>
 </details>
 </dd>
 <dt id="osbot_utils.utils.Files.file_create_gz"><code class="name flex">
@@ -603,6 +633,34 @@ def not_exists(path):
     return os.path.exists(path) is False</code></pre>
 </details>
 </dd>
+<dt id="osbot_utils.utils.Files.file_open"><code class="name flex">
+<span>def <span class="ident">file_open</span></span>(<span>path, mode='r')</span>
+</code></dt>
+<dd>
+<div class="desc"></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">@staticmethod
+def open(path, mode=&#39;r&#39;):
+    return open(path, mode=mode)</code></pre>
+</details>
+</dd>
+<dt id="osbot_utils.utils.Files.file_open_bytes"><code class="name flex">
+<span>def <span class="ident">file_open_bytes</span></span>(<span>path)</span>
+</code></dt>
+<dd>
+<div class="desc"></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">@staticmethod
+def open_bytes(path):
+    return Files.open(path, mode=&#39;rb&#39;)</code></pre>
+</details>
+</dd>
 <dt id="osbot_utils.utils.Files.file_save"><code class="name flex">
 <span>def <span class="ident">file_save</span></span>(<span>contents, path=None, extension=None)</span>
 </code></dt>
@@ -664,7 +722,7 @@ def unzip_file(zip_file, target_folder=None, format=&#39;zip&#39;):
 </details>
 </dd>
 <dt id="osbot_utils.utils.Files.file_write"><code class="name flex">
-<span>def <span class="ident">file_write</span></span>(<span>path=None, contents=None)</span>
+<span>def <span class="ident">file_write</span></span>(<span>path=None, contents=None, extension=None, mode='w')</span>
 </code></dt>
 <dd>
 <div class="desc"></div>
@@ -673,12 +731,26 @@ def unzip_file(zip_file, target_folder=None, format=&#39;zip&#39;):
 <span>Expand source code</span>
 </summary>
 <pre><code class="python">@staticmethod
-def write(path = None,contents=None):
-    path     = path or temp_file()
+def write(path = None,contents=None, extension=None, mode=&#39;w&#39;):
+    path     = path or temp_file(extension)
     contents = contents or &#39;&#39;
-    with open(path, &#34;w&#34;) as file:
+    with open(file=path, mode=mode) as file:
         file.write(contents)
     return path</code></pre>
+</details>
+</dd>
+<dt id="osbot_utils.utils.Files.file_write_bytes"><code class="name flex">
+<span>def <span class="ident">file_write_bytes</span></span>(<span>path=None, contents=None, extension=None)</span>
+</code></dt>
+<dd>
+<div class="desc"></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">@staticmethod
+def write_bytes(path=None, contents=None, extension=None):
+    return Files.write(path=path, contents=contents, extension=extension, mode=&#39;wb&#39;)</code></pre>
 </details>
 </dd>
 <dt id="osbot_utils.utils.Files.file_write_gz"><code class="name flex">
@@ -1256,6 +1328,14 @@ def zip_folder(root_dir, format=&#39;zip&#39;):
         return os.path.exists(path) is False
 
     @staticmethod
+    def open(path, mode=&#39;r&#39;):
+        return open(path, mode=mode)
+
+    @staticmethod
+    def open_bytes(path):
+        return Files.open(path, mode=&#39;rb&#39;)
+
+    @staticmethod
     def parent_folder(path):
         return os.path.dirname(path)
 
@@ -1306,12 +1386,16 @@ def zip_folder(root_dir, format=&#39;zip&#39;):
         return folder
 
     @staticmethod
-    def write(path = None,contents=None):
-        path     = path or temp_file()
+    def write(path = None,contents=None, extension=None, mode=&#39;w&#39;):
+        path     = path or temp_file(extension)
         contents = contents or &#39;&#39;
-        with open(path, &#34;w&#34;) as file:
+        with open(file=path, mode=mode) as file:
             file.write(contents)
         return path
+
+    @staticmethod
+    def write_bytes(path=None, contents=None, extension=None):
+        return Files.write(path=path, contents=contents, extension=extension, mode=&#39;wb&#39;)
 
     @staticmethod
     def write_gz(path=None, contents=None):
@@ -1691,6 +1775,34 @@ def not_exists(path):
     return os.path.exists(path) is False</code></pre>
 </details>
 </dd>
+<dt id="osbot_utils.utils.Files.Files.open"><code class="name flex">
+<span>def <span class="ident">open</span></span>(<span>path, mode='r')</span>
+</code></dt>
+<dd>
+<div class="desc"></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">@staticmethod
+def open(path, mode=&#39;r&#39;):
+    return open(path, mode=mode)</code></pre>
+</details>
+</dd>
+<dt id="osbot_utils.utils.Files.Files.open_bytes"><code class="name flex">
+<span>def <span class="ident">open_bytes</span></span>(<span>path)</span>
+</code></dt>
+<dd>
+<div class="desc"></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">@staticmethod
+def open_bytes(path):
+    return Files.open(path, mode=&#39;rb&#39;)</code></pre>
+</details>
+</dd>
 <dt id="osbot_utils.utils.Files.Files.parent_folder"><code class="name flex">
 <span>def <span class="ident">parent_folder</span></span>(<span>path)</span>
 </code></dt>
@@ -1851,7 +1963,7 @@ def unzip_file(zip_file, target_folder=None, format=&#39;zip&#39;):
 </details>
 </dd>
 <dt id="osbot_utils.utils.Files.Files.write"><code class="name flex">
-<span>def <span class="ident">write</span></span>(<span>path=None, contents=None)</span>
+<span>def <span class="ident">write</span></span>(<span>path=None, contents=None, extension=None, mode='w')</span>
 </code></dt>
 <dd>
 <div class="desc"></div>
@@ -1860,12 +1972,26 @@ def unzip_file(zip_file, target_folder=None, format=&#39;zip&#39;):
 <span>Expand source code</span>
 </summary>
 <pre><code class="python">@staticmethod
-def write(path = None,contents=None):
-    path     = path or temp_file()
+def write(path = None,contents=None, extension=None, mode=&#39;w&#39;):
+    path     = path or temp_file(extension)
     contents = contents or &#39;&#39;
-    with open(path, &#34;w&#34;) as file:
+    with open(file=path, mode=mode) as file:
         file.write(contents)
     return path</code></pre>
+</details>
+</dd>
+<dt id="osbot_utils.utils.Files.Files.write_bytes"><code class="name flex">
+<span>def <span class="ident">write_bytes</span></span>(<span>path=None, contents=None, extension=None)</span>
+</code></dt>
+<dd>
+<div class="desc"></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">@staticmethod
+def write_bytes(path=None, contents=None, extension=None):
+    return Files.write(path=path, contents=contents, extension=extension, mode=&#39;wb&#39;)</code></pre>
 </details>
 </dd>
 <dt id="osbot_utils.utils.Files.Files.write_gz"><code class="name flex">
@@ -1986,6 +2112,7 @@ def zip_folder(root_dir, format=&#39;zip&#39;):
 <li><code><a title="osbot_utils.utils.Files.file_contents_gz" href="#osbot_utils.utils.Files.file_contents_gz">file_contents_gz</a></code></li>
 <li><code><a title="osbot_utils.utils.Files.file_copy" href="#osbot_utils.utils.Files.file_copy">file_copy</a></code></li>
 <li><code><a title="osbot_utils.utils.Files.file_create" href="#osbot_utils.utils.Files.file_create">file_create</a></code></li>
+<li><code><a title="osbot_utils.utils.Files.file_create_bytes" href="#osbot_utils.utils.Files.file_create_bytes">file_create_bytes</a></code></li>
 <li><code><a title="osbot_utils.utils.Files.file_create_gz" href="#osbot_utils.utils.Files.file_create_gz">file_create_gz</a></code></li>
 <li><code><a title="osbot_utils.utils.Files.file_delete" href="#osbot_utils.utils.Files.file_delete">file_delete</a></code></li>
 <li><code><a title="osbot_utils.utils.Files.file_exists" href="#osbot_utils.utils.Files.file_exists">file_exists</a></code></li>
@@ -1996,11 +2123,14 @@ def zip_folder(root_dir, format=&#39;zip&#39;):
 <li><code><a title="osbot_utils.utils.Files.file_lines_gz" href="#osbot_utils.utils.Files.file_lines_gz">file_lines_gz</a></code></li>
 <li><code><a title="osbot_utils.utils.Files.file_name" href="#osbot_utils.utils.Files.file_name">file_name</a></code></li>
 <li><code><a title="osbot_utils.utils.Files.file_not_exists" href="#osbot_utils.utils.Files.file_not_exists">file_not_exists</a></code></li>
+<li><code><a title="osbot_utils.utils.Files.file_open" href="#osbot_utils.utils.Files.file_open">file_open</a></code></li>
+<li><code><a title="osbot_utils.utils.Files.file_open_bytes" href="#osbot_utils.utils.Files.file_open_bytes">file_open_bytes</a></code></li>
 <li><code><a title="osbot_utils.utils.Files.file_save" href="#osbot_utils.utils.Files.file_save">file_save</a></code></li>
 <li><code><a title="osbot_utils.utils.Files.file_size" href="#osbot_utils.utils.Files.file_size">file_size</a></code></li>
 <li><code><a title="osbot_utils.utils.Files.file_stats" href="#osbot_utils.utils.Files.file_stats">file_stats</a></code></li>
 <li><code><a title="osbot_utils.utils.Files.file_unzip" href="#osbot_utils.utils.Files.file_unzip">file_unzip</a></code></li>
 <li><code><a title="osbot_utils.utils.Files.file_write" href="#osbot_utils.utils.Files.file_write">file_write</a></code></li>
+<li><code><a title="osbot_utils.utils.Files.file_write_bytes" href="#osbot_utils.utils.Files.file_write_bytes">file_write_bytes</a></code></li>
 <li><code><a title="osbot_utils.utils.Files.file_write_gz" href="#osbot_utils.utils.Files.file_write_gz">file_write_gz</a></code></li>
 <li><code><a title="osbot_utils.utils.Files.folder_copy" href="#osbot_utils.utils.Files.folder_copy">folder_copy</a></code></li>
 <li><code><a title="osbot_utils.utils.Files.folder_copy_except" href="#osbot_utils.utils.Files.folder_copy_except">folder_copy_except</a></code></li>
@@ -2058,6 +2188,8 @@ def zip_folder(root_dir, format=&#39;zip&#39;):
 <li><code><a title="osbot_utils.utils.Files.Files.lines" href="#osbot_utils.utils.Files.Files.lines">lines</a></code></li>
 <li><code><a title="osbot_utils.utils.Files.Files.lines_gz" href="#osbot_utils.utils.Files.Files.lines_gz">lines_gz</a></code></li>
 <li><code><a title="osbot_utils.utils.Files.Files.not_exists" href="#osbot_utils.utils.Files.Files.not_exists">not_exists</a></code></li>
+<li><code><a title="osbot_utils.utils.Files.Files.open" href="#osbot_utils.utils.Files.Files.open">open</a></code></li>
+<li><code><a title="osbot_utils.utils.Files.Files.open_bytes" href="#osbot_utils.utils.Files.Files.open_bytes">open_bytes</a></code></li>
 <li><code><a title="osbot_utils.utils.Files.Files.parent_folder" href="#osbot_utils.utils.Files.Files.parent_folder">parent_folder</a></code></li>
 <li><code><a title="osbot_utils.utils.Files.Files.parent_folder_combine" href="#osbot_utils.utils.Files.Files.parent_folder_combine">parent_folder_combine</a></code></li>
 <li><code><a title="osbot_utils.utils.Files.Files.path_combine" href="#osbot_utils.utils.Files.Files.path_combine">path_combine</a></code></li>
@@ -2069,6 +2201,7 @@ def zip_folder(root_dir, format=&#39;zip&#39;):
 <li><code><a title="osbot_utils.utils.Files.Files.temp_folder_with_temp_file" href="#osbot_utils.utils.Files.Files.temp_folder_with_temp_file">temp_folder_with_temp_file</a></code></li>
 <li><code><a title="osbot_utils.utils.Files.Files.unzip_file" href="#osbot_utils.utils.Files.Files.unzip_file">unzip_file</a></code></li>
 <li><code><a title="osbot_utils.utils.Files.Files.write" href="#osbot_utils.utils.Files.Files.write">write</a></code></li>
+<li><code><a title="osbot_utils.utils.Files.Files.write_bytes" href="#osbot_utils.utils.Files.Files.write_bytes">write_bytes</a></code></li>
 <li><code><a title="osbot_utils.utils.Files.Files.write_gz" href="#osbot_utils.utils.Files.Files.write_gz">write_gz</a></code></li>
 <li><code><a title="osbot_utils.utils.Files.Files.zip_file_list" href="#osbot_utils.utils.Files.Files.zip_file_list">zip_file_list</a></code></li>
 <li><code><a title="osbot_utils.utils.Files.Files.zip_files" href="#osbot_utils.utils.Files.Files.zip_files">zip_files</a></code></li>
