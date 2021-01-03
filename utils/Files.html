@@ -51,14 +51,16 @@ class Files:
             return shutil.copy(source, destination)                 # copy file and returns file destination
 
     @staticmethod
-    def contents(path):
-        with open(path, &#34;rt&#34;) as file:
-            return file.read()
+    def contents(path, mode=&#39;rt&#39;):
+        if file_exists(path):
+            with file_open(path, mode) as file:
+                return file.read()
 
     @staticmethod
-    def contents_gz(path):
-        with gzip.open(path, &#34;rt&#34;) as file:
-            return file.read()
+    def contents_gz(path, mode=&#39;rt&#39;):
+        if file_exists(path):
+            with file_open_gz(path, mode) as file:
+                return file.read()
 
     @staticmethod
     def current_folder():
@@ -171,6 +173,10 @@ class Files:
     @staticmethod
     def open(path, mode=&#39;r&#39;):
         return open(path, mode=mode)
+
+    @staticmethod
+    def open_gz(path, mode=&#39;r&#39;):
+        return gzip.open(path, mode=mode)
 
     @staticmethod
     def open_bytes(path):
@@ -302,6 +308,7 @@ file_lines_gz               = Files.lines_gz
 file_name                   = Files.file_name
 file_not_exists             = Files.not_exists
 file_open                   = Files.open
+file_open_gz                = Files.open_gz
 file_open_bytes             = Files.open_bytes
 file_save                   = Files.save
 file_size                   = Files.file_size
@@ -322,6 +329,9 @@ folder_name                 = Files.folder_name
 folder_temp                 = Files.temp_folder
 folder_files                = Files.files
 folder_zip                  = Files.zip_folder
+
+load_file                   = Files.contents
+load_file_gz                = Files.contents_gz
 
 path_append                 = Files.path_combine
 path_combine                = Files.path_combine
@@ -380,7 +390,7 @@ def bytes(path):
 </details>
 </dd>
 <dt id="osbot_utils.utils.Files.file_contents"><code class="name flex">
-<span>def <span class="ident">file_contents</span></span>(<span>path)</span>
+<span>def <span class="ident">file_contents</span></span>(<span>path, mode='rt')</span>
 </code></dt>
 <dd>
 <div class="desc"></div>
@@ -389,9 +399,10 @@ def bytes(path):
 <span>Expand source code</span>
 </summary>
 <pre><code class="python">@staticmethod
-def contents(path):
-    with open(path, &#34;rt&#34;) as file:
-        return file.read()</code></pre>
+def contents(path, mode=&#39;rt&#39;):
+    if file_exists(path):
+        with file_open(path, mode) as file:
+            return file.read()</code></pre>
 </details>
 </dd>
 <dt id="osbot_utils.utils.Files.file_contents_as_bytes"><code class="name flex">
@@ -410,7 +421,7 @@ def bytes(path):
 </details>
 </dd>
 <dt id="osbot_utils.utils.Files.file_contents_gz"><code class="name flex">
-<span>def <span class="ident">file_contents_gz</span></span>(<span>path)</span>
+<span>def <span class="ident">file_contents_gz</span></span>(<span>path, mode='rt')</span>
 </code></dt>
 <dd>
 <div class="desc"></div>
@@ -419,9 +430,10 @@ def bytes(path):
 <span>Expand source code</span>
 </summary>
 <pre><code class="python">@staticmethod
-def contents_gz(path):
-    with gzip.open(path, &#34;rt&#34;) as file:
-        return file.read()</code></pre>
+def contents_gz(path, mode=&#39;rt&#39;):
+    if file_exists(path):
+        with file_open_gz(path, mode) as file:
+            return file.read()</code></pre>
 </details>
 </dd>
 <dt id="osbot_utils.utils.Files.file_copy"><code class="name flex">
@@ -659,6 +671,20 @@ def open(path, mode=&#39;r&#39;):
 <pre><code class="python">@staticmethod
 def open_bytes(path):
     return Files.open(path, mode=&#39;rb&#39;)</code></pre>
+</details>
+</dd>
+<dt id="osbot_utils.utils.Files.file_open_gz"><code class="name flex">
+<span>def <span class="ident">file_open_gz</span></span>(<span>path, mode='r')</span>
+</code></dt>
+<dd>
+<div class="desc"></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">@staticmethod
+def open_gz(path, mode=&#39;r&#39;):
+    return gzip.open(path, mode=mode)</code></pre>
 </details>
 </dd>
 <dt id="osbot_utils.utils.Files.file_save"><code class="name flex">
@@ -942,6 +968,38 @@ def zip_folder(root_dir, format=&#39;zip&#39;):
     return shutil.make_archive(base_name=root_dir, format=format, root_dir=root_dir)</code></pre>
 </details>
 </dd>
+<dt id="osbot_utils.utils.Files.load_file"><code class="name flex">
+<span>def <span class="ident">load_file</span></span>(<span>path, mode='rt')</span>
+</code></dt>
+<dd>
+<div class="desc"></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">@staticmethod
+def contents(path, mode=&#39;rt&#39;):
+    if file_exists(path):
+        with file_open(path, mode) as file:
+            return file.read()</code></pre>
+</details>
+</dd>
+<dt id="osbot_utils.utils.Files.load_file_gz"><code class="name flex">
+<span>def <span class="ident">load_file_gz</span></span>(<span>path, mode='rt')</span>
+</code></dt>
+<dd>
+<div class="desc"></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">@staticmethod
+def contents_gz(path, mode=&#39;rt&#39;):
+    if file_exists(path):
+        with file_open_gz(path, mode) as file:
+            return file.read()</code></pre>
+</details>
+</dd>
 <dt id="osbot_utils.utils.Files.parent_folder"><code class="name flex">
 <span>def <span class="ident">parent_folder</span></span>(<span>path)</span>
 </code></dt>
@@ -1210,14 +1268,16 @@ def zip_folder(root_dir, format=&#39;zip&#39;):
             return shutil.copy(source, destination)                 # copy file and returns file destination
 
     @staticmethod
-    def contents(path):
-        with open(path, &#34;rt&#34;) as file:
-            return file.read()
+    def contents(path, mode=&#39;rt&#39;):
+        if file_exists(path):
+            with file_open(path, mode) as file:
+                return file.read()
 
     @staticmethod
-    def contents_gz(path):
-        with gzip.open(path, &#34;rt&#34;) as file:
-            return file.read()
+    def contents_gz(path, mode=&#39;rt&#39;):
+        if file_exists(path):
+            with file_open_gz(path, mode) as file:
+                return file.read()
 
     @staticmethod
     def current_folder():
@@ -1330,6 +1390,10 @@ def zip_folder(root_dir, format=&#39;zip&#39;):
     @staticmethod
     def open(path, mode=&#39;r&#39;):
         return open(path, mode=mode)
+
+    @staticmethod
+    def open_gz(path, mode=&#39;r&#39;):
+        return gzip.open(path, mode=mode)
 
     @staticmethod
     def open_bytes(path):
@@ -1454,7 +1518,7 @@ def bytes(path):
 </details>
 </dd>
 <dt id="osbot_utils.utils.Files.Files.contents"><code class="name flex">
-<span>def <span class="ident">contents</span></span>(<span>path)</span>
+<span>def <span class="ident">contents</span></span>(<span>path, mode='rt')</span>
 </code></dt>
 <dd>
 <div class="desc"></div>
@@ -1463,13 +1527,14 @@ def bytes(path):
 <span>Expand source code</span>
 </summary>
 <pre><code class="python">@staticmethod
-def contents(path):
-    with open(path, &#34;rt&#34;) as file:
-        return file.read()</code></pre>
+def contents(path, mode=&#39;rt&#39;):
+    if file_exists(path):
+        with file_open(path, mode) as file:
+            return file.read()</code></pre>
 </details>
 </dd>
 <dt id="osbot_utils.utils.Files.Files.contents_gz"><code class="name flex">
-<span>def <span class="ident">contents_gz</span></span>(<span>path)</span>
+<span>def <span class="ident">contents_gz</span></span>(<span>path, mode='rt')</span>
 </code></dt>
 <dd>
 <div class="desc"></div>
@@ -1478,9 +1543,10 @@ def contents(path):
 <span>Expand source code</span>
 </summary>
 <pre><code class="python">@staticmethod
-def contents_gz(path):
-    with gzip.open(path, &#34;rt&#34;) as file:
-        return file.read()</code></pre>
+def contents_gz(path, mode=&#39;rt&#39;):
+    if file_exists(path):
+        with file_open_gz(path, mode) as file:
+            return file.read()</code></pre>
 </details>
 </dd>
 <dt id="osbot_utils.utils.Files.Files.copy"><code class="name flex">
@@ -1801,6 +1867,20 @@ def open(path, mode=&#39;r&#39;):
 <pre><code class="python">@staticmethod
 def open_bytes(path):
     return Files.open(path, mode=&#39;rb&#39;)</code></pre>
+</details>
+</dd>
+<dt id="osbot_utils.utils.Files.Files.open_gz"><code class="name flex">
+<span>def <span class="ident">open_gz</span></span>(<span>path, mode='r')</span>
+</code></dt>
+<dd>
+<div class="desc"></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">@staticmethod
+def open_gz(path, mode=&#39;r&#39;):
+    return gzip.open(path, mode=mode)</code></pre>
 </details>
 </dd>
 <dt id="osbot_utils.utils.Files.Files.parent_folder"><code class="name flex">
@@ -2125,6 +2205,7 @@ def zip_folder(root_dir, format=&#39;zip&#39;):
 <li><code><a title="osbot_utils.utils.Files.file_not_exists" href="#osbot_utils.utils.Files.file_not_exists">file_not_exists</a></code></li>
 <li><code><a title="osbot_utils.utils.Files.file_open" href="#osbot_utils.utils.Files.file_open">file_open</a></code></li>
 <li><code><a title="osbot_utils.utils.Files.file_open_bytes" href="#osbot_utils.utils.Files.file_open_bytes">file_open_bytes</a></code></li>
+<li><code><a title="osbot_utils.utils.Files.file_open_gz" href="#osbot_utils.utils.Files.file_open_gz">file_open_gz</a></code></li>
 <li><code><a title="osbot_utils.utils.Files.file_save" href="#osbot_utils.utils.Files.file_save">file_save</a></code></li>
 <li><code><a title="osbot_utils.utils.Files.file_size" href="#osbot_utils.utils.Files.file_size">file_size</a></code></li>
 <li><code><a title="osbot_utils.utils.Files.file_stats" href="#osbot_utils.utils.Files.file_stats">file_stats</a></code></li>
@@ -2143,6 +2224,8 @@ def zip_folder(root_dir, format=&#39;zip&#39;):
 <li><code><a title="osbot_utils.utils.Files.folder_not_exists" href="#osbot_utils.utils.Files.folder_not_exists">folder_not_exists</a></code></li>
 <li><code><a title="osbot_utils.utils.Files.folder_temp" href="#osbot_utils.utils.Files.folder_temp">folder_temp</a></code></li>
 <li><code><a title="osbot_utils.utils.Files.folder_zip" href="#osbot_utils.utils.Files.folder_zip">folder_zip</a></code></li>
+<li><code><a title="osbot_utils.utils.Files.load_file" href="#osbot_utils.utils.Files.load_file">load_file</a></code></li>
+<li><code><a title="osbot_utils.utils.Files.load_file_gz" href="#osbot_utils.utils.Files.load_file_gz">load_file_gz</a></code></li>
 <li><code><a title="osbot_utils.utils.Files.parent_folder" href="#osbot_utils.utils.Files.parent_folder">parent_folder</a></code></li>
 <li><code><a title="osbot_utils.utils.Files.parent_folder_combine" href="#osbot_utils.utils.Files.parent_folder_combine">parent_folder_combine</a></code></li>
 <li><code><a title="osbot_utils.utils.Files.path_append" href="#osbot_utils.utils.Files.path_append">path_append</a></code></li>
@@ -2190,6 +2273,7 @@ def zip_folder(root_dir, format=&#39;zip&#39;):
 <li><code><a title="osbot_utils.utils.Files.Files.not_exists" href="#osbot_utils.utils.Files.Files.not_exists">not_exists</a></code></li>
 <li><code><a title="osbot_utils.utils.Files.Files.open" href="#osbot_utils.utils.Files.Files.open">open</a></code></li>
 <li><code><a title="osbot_utils.utils.Files.Files.open_bytes" href="#osbot_utils.utils.Files.Files.open_bytes">open_bytes</a></code></li>
+<li><code><a title="osbot_utils.utils.Files.Files.open_gz" href="#osbot_utils.utils.Files.Files.open_gz">open_gz</a></code></li>
 <li><code><a title="osbot_utils.utils.Files.Files.parent_folder" href="#osbot_utils.utils.Files.Files.parent_folder">parent_folder</a></code></li>
 <li><code><a title="osbot_utils.utils.Files.Files.parent_folder_combine" href="#osbot_utils.utils.Files.Files.parent_folder_combine">parent_folder_combine</a></code></li>
 <li><code><a title="osbot_utils.utils.Files.Files.path_combine" href="#osbot_utils.utils.Files.Files.path_combine">path_combine</a></code></li>

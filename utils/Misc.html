@@ -114,24 +114,6 @@ def is_number(value):
         pass
     return False
 
-def json_dumps(target, message=None):
-    if target:
-        return json.dumps(target, indent=4)
-    return message
-
-def json_format(target, message=None):
-    if target:
-        return json.dumps(target, indent=4)
-    return message
-
-def json_load(target):
-    if target:
-        try:
-            return json.loads(target)
-        except:
-            pass
-    return None
-
 def none_or_empty(target,field):
     if target:
         value = target.get(field)
@@ -522,54 +504,6 @@ def array_find(array:list, item):
     return False</code></pre>
 </details>
 </dd>
-<dt id="osbot_utils.utils.Misc.json_dumps"><code class="name flex">
-<span>def <span class="ident">json_dumps</span></span>(<span>target, message=None)</span>
-</code></dt>
-<dd>
-<div class="desc"></div>
-<details class="source">
-<summary>
-<span>Expand source code</span>
-</summary>
-<pre><code class="python">def json_dumps(target, message=None):
-    if target:
-        return json.dumps(target, indent=4)
-    return message</code></pre>
-</details>
-</dd>
-<dt id="osbot_utils.utils.Misc.json_format"><code class="name flex">
-<span>def <span class="ident">json_format</span></span>(<span>target, message=None)</span>
-</code></dt>
-<dd>
-<div class="desc"></div>
-<details class="source">
-<summary>
-<span>Expand source code</span>
-</summary>
-<pre><code class="python">def json_format(target, message=None):
-    if target:
-        return json.dumps(target, indent=4)
-    return message</code></pre>
-</details>
-</dd>
-<dt id="osbot_utils.utils.Misc.json_load"><code class="name flex">
-<span>def <span class="ident">json_load</span></span>(<span>target)</span>
-</code></dt>
-<dd>
-<div class="desc"></div>
-<details class="source">
-<summary>
-<span>Expand source code</span>
-</summary>
-<pre><code class="python">def json_load(target):
-    if target:
-        try:
-            return json.loads(target)
-        except:
-            pass
-    return None</code></pre>
-</details>
-</dd>
 <dt id="osbot_utils.utils.Misc.last_letter"><code class="name flex">
 <span>def <span class="ident">last_letter</span></span>(<span>text)</span>
 </code></dt>
@@ -930,9 +864,6 @@ def array_find(array:list, item):
 <li><code><a title="osbot_utils.utils.Misc.get_random_color" href="#osbot_utils.utils.Misc.get_random_color">get_random_color</a></code></li>
 <li><code><a title="osbot_utils.utils.Misc.get_value" href="#osbot_utils.utils.Misc.get_value">get_value</a></code></li>
 <li><code><a title="osbot_utils.utils.Misc.is_number" href="#osbot_utils.utils.Misc.is_number">is_number</a></code></li>
-<li><code><a title="osbot_utils.utils.Misc.json_dumps" href="#osbot_utils.utils.Misc.json_dumps">json_dumps</a></code></li>
-<li><code><a title="osbot_utils.utils.Misc.json_format" href="#osbot_utils.utils.Misc.json_format">json_format</a></code></li>
-<li><code><a title="osbot_utils.utils.Misc.json_load" href="#osbot_utils.utils.Misc.json_load">json_load</a></code></li>
 <li><code><a title="osbot_utils.utils.Misc.last_letter" href="#osbot_utils.utils.Misc.last_letter">last_letter</a></code></li>
 <li><code><a title="osbot_utils.utils.Misc.md5" href="#osbot_utils.utils.Misc.md5">md5</a></code></li>
 <li><code><a title="osbot_utils.utils.Misc.none_or_empty" href="#osbot_utils.utils.Misc.none_or_empty">none_or_empty</a></code></li>
