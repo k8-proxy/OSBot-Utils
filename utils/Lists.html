@@ -44,7 +44,11 @@
 
     @staticmethod
     def empty(list):
-        return not Lists.not_empty(list)</code></pre>
+        return not Lists.not_empty(list)
+
+list_empty     = Lists.empty
+list_first     = Lists.first
+list_not_empty = Lists.not_empty</code></pre>
 </details>
 </section>
 <section>
@@ -52,6 +56,57 @@
 <section>
 </section>
 <section>
+<h2 class="section-title" id="header-functions">Functions</h2>
+<dl>
+<dt id="osbot_utils.utils.Lists.list_empty"><code class="name flex">
+<span>def <span class="ident">list_empty</span></span>(<span>list)</span>
+</code></dt>
+<dd>
+<div class="desc"></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">@staticmethod
+def empty(list):
+    return not Lists.not_empty(list)</code></pre>
+</details>
+</dd>
+<dt id="osbot_utils.utils.Lists.list_first"><code class="name flex">
+<span>def <span class="ident">list_first</span></span>(<span>list, strip=False)</span>
+</code></dt>
+<dd>
+<div class="desc"></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">@staticmethod
+def first(list, strip=False):
+    if Lists.not_empty(list):
+        value = list[0]
+        if strip:
+            value = value.strip()
+        return value</code></pre>
+</details>
+</dd>
+<dt id="osbot_utils.utils.Lists.list_not_empty"><code class="name flex">
+<span>def <span class="ident">list_not_empty</span></span>(<span>list)</span>
+</code></dt>
+<dd>
+<div class="desc"></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">@staticmethod
+def not_empty(list):
+    if list and type(list).__name__ == &#39;list&#39; and len(list) &gt;0:
+        return True
+    return False</code></pre>
+</details>
+</dd>
+</dl>
 </section>
 <section>
 <h2 class="section-title" id="header-classes">Classes</h2>
@@ -149,6 +204,13 @@ def not_empty(list):
 <li><h3>Super-module</h3>
 <ul>
 <li><code><a title="osbot_utils.utils" href="index.html">osbot_utils.utils</a></code></li>
+</ul>
+</li>
+<li><h3><a href="#header-functions">Functions</a></h3>
+<ul class="">
+<li><code><a title="osbot_utils.utils.Lists.list_empty" href="#osbot_utils.utils.Lists.list_empty">list_empty</a></code></li>
+<li><code><a title="osbot_utils.utils.Lists.list_first" href="#osbot_utils.utils.Lists.list_first">list_first</a></code></li>
+<li><code><a title="osbot_utils.utils.Lists.list_not_empty" href="#osbot_utils.utils.Lists.list_not_empty">list_not_empty</a></code></li>
 </ul>
 </li>
 <li><h3><a href="#header-classes">Classes</a></h3>

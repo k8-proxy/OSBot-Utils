@@ -27,35 +27,34 @@
 <span>Expand source code</span>
 </summary>
 <pre><code class="python">import base64
+import logging
 
 from osbot_utils.utils.Dev import Dev
 
 from osbot_utils.utils.Files import temp_file
 from osbot_utils.utils.Misc import bytes_to_base64
 
+logger_png = logging.getLogger()
 
-def save_png_bytes_to_file(bytes, png_file=None, log_status=True):
+def save_png_bytes_to_file(bytes, png_file=None):
     png_data = bytes_to_base64(bytes)
-    return save_png_base64_to_file(png_data, png_file, log_status)
+    return save_png_base64_to_file(png_data, png_file)
 
-def save_png_base64_to_file(png_data, png_file=None, log_status=True):
+def save_png_base64_to_file(png_data, png_file=None):
     if png_data is not None:
         if type(png_data) is not str:
-            if (log_status):
-                Dev.pprint(f&#39;Png data was not a string: {png_data}&#39;)
+            logger_png.error(f&#39;Png data was not a string: {png_data}&#39;)
         else:
             if png_file is None:
                 png_file = temp_file(&#39;.png&#39;)
             try:
                 with open(png_file, &#34;wb&#34;) as fh:
                     fh.write(base64.decodebytes(png_data.encode()))
-                if (log_status):
-                    Dev.pprint(f&#39;Png data with size {len(png_data)} saved to {png_file}&#39;)
+                logger_png.error(f&#39;Png data with size {len(png_data)} saved to {png_file}&#39;)
                 return png_file
             except Exception as error:
-                if(log_status):
-                    Dev.pprint(f&#39;png save error: {error}&#39;)
-                    Dev.pprint(png_data)</code></pre>
+                logger_png.error(f&#39;png save error: {error}&#39;)
+                logger_png.error(png_data)</code></pre>
 </details>
 </section>
 <section>
@@ -66,7 +65,7 @@ def save_png_base64_to_file(png_data, png_file=None, log_status=True):
 <h2 class="section-title" id="header-functions">Functions</h2>
 <dl>
 <dt id="osbot_utils.utils.Png.save_png_base64_to_file"><code class="name flex">
-<span>def <span class="ident">save_png_base64_to_file</span></span>(<span>png_data, png_file=None, log_status=True)</span>
+<span>def <span class="ident">save_png_base64_to_file</span></span>(<span>png_data, png_file=None)</span>
 </code></dt>
 <dd>
 <div class="desc"></div>
@@ -74,28 +73,25 @@ def save_png_base64_to_file(png_data, png_file=None, log_status=True):
 <summary>
 <span>Expand source code</span>
 </summary>
-<pre><code class="python">def save_png_base64_to_file(png_data, png_file=None, log_status=True):
+<pre><code class="python">def save_png_base64_to_file(png_data, png_file=None):
     if png_data is not None:
         if type(png_data) is not str:
-            if (log_status):
-                Dev.pprint(f&#39;Png data was not a string: {png_data}&#39;)
+            logger_png.error(f&#39;Png data was not a string: {png_data}&#39;)
         else:
             if png_file is None:
                 png_file = temp_file(&#39;.png&#39;)
             try:
                 with open(png_file, &#34;wb&#34;) as fh:
                     fh.write(base64.decodebytes(png_data.encode()))
-                if (log_status):
-                    Dev.pprint(f&#39;Png data with size {len(png_data)} saved to {png_file}&#39;)
+                logger_png.error(f&#39;Png data with size {len(png_data)} saved to {png_file}&#39;)
                 return png_file
             except Exception as error:
-                if(log_status):
-                    Dev.pprint(f&#39;png save error: {error}&#39;)
-                    Dev.pprint(png_data)</code></pre>
+                logger_png.error(f&#39;png save error: {error}&#39;)
+                logger_png.error(png_data)</code></pre>
 </details>
 </dd>
 <dt id="osbot_utils.utils.Png.save_png_bytes_to_file"><code class="name flex">
-<span>def <span class="ident">save_png_bytes_to_file</span></span>(<span>bytes, png_file=None, log_status=True)</span>
+<span>def <span class="ident">save_png_bytes_to_file</span></span>(<span>bytes, png_file=None)</span>
 </code></dt>
 <dd>
 <div class="desc"></div>
@@ -103,9 +99,9 @@ def save_png_base64_to_file(png_data, png_file=None, log_status=True):
 <summary>
 <span>Expand source code</span>
 </summary>
-<pre><code class="python">def save_png_bytes_to_file(bytes, png_file=None, log_status=True):
+<pre><code class="python">def save_png_bytes_to_file(bytes, png_file=None):
     png_data = bytes_to_base64(bytes)
-    return save_png_base64_to_file(png_data, png_file, log_status)</code></pre>
+    return save_png_base64_to_file(png_data, png_file)</code></pre>
 </details>
 </dd>
 </dl>

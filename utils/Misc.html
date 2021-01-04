@@ -28,7 +28,6 @@
 </summary>
 <pre><code class="python">import base64
 import hashlib
-import json
 import random
 import string
 import sys
@@ -39,6 +38,8 @@ from datetime import datetime
 from secrets import token_bytes
 from time import sleep
 from osbot_utils.decorators.methods.function_type_check import function_type_check
+from osbot_utils.utils.Files import file_extension_fix
+
 
 @function_type_check
 def array_add(array : list, value):
@@ -75,6 +76,11 @@ def array_pop_and_trim(array, position=None):
         return trim(value)
     return value
 
+def base64_to_bytes(bytes_base64):
+    if type(bytes_base64) is str:
+        bytes_base64 = bytes_base64.encode()
+    return base64.decodebytes(bytes_base64)
+
 def bytes_to_base64(bytes):
     return base64.b64encode(bytes).decode()
 
@@ -86,21 +92,21 @@ def chunks(items:list, split: int):
 def class_name(target):
     if target:
         return type(target).__name__
-    return None
 
 def date_now():
     return str(datetime.now())
 
+def str_to_date(str_date, format=&#39;%Y-%m-%d %H:%M:%S.%f&#39;):
+    return datetime.strptime(str_date,format)
+
 def get_value(target, key, default=None):
     if target is not None:
-        try:
-            value = target.get(key)
-            if value is not None:
-                return value
-        except:
-            pass
+        value = target.get(key)
+        if value is not None:
+            return value
     return default
 
+# todo: check if this should still be here
 def get_random_color(max=5):
     if max &gt; 5: max = 5                                                             # add support for more than 5 colors
     colors = [&#39;skyblue&#39;, &#39;darkseagreen&#39;, &#39;palevioletred&#39;, &#39;coral&#39;, &#39;darkgray&#39;]
@@ -115,18 +121,18 @@ def is_number(value):
     return False
 
 def none_or_empty(target,field):
-    if target:
+    if target and field:
         value = target.get(field)
         return (value is None) or value == &#39;&#39;
     return True
 
-def object_data(target):
-    #fields = [field for field in dir(target) if not callable(getattr(target, field)) and not field.startswith(&#34;a__&#34;)]
-    return target.__dict__ # this one seems to do the trick (if not look at the code sample above)
+# def object_data(target):
+#     #fields = [field for field in dir(target) if not callable(getattr(target, field)) and not field.startswith(&#34;a__&#34;)]
+#     return target.__dict__ # this one seems to do the trick (if not look at the code sample above)
 
 
 def random_filename(extension=&#39;.tmp&#39;, length=10):
-    if len(extension) &gt; 0 and  extension[0] != &#39;.&#39; : extension = &#39;.&#39; + extension
+    extension = file_extension_fix(extension)
     return &#39;{0}{1}&#39;.format(&#39;&#39;.join(random.choices(string.ascii_lowercase + string.digits, k=length)) ,  extension)
 
 def random_port(min=20000,max=65000):
@@ -141,16 +147,16 @@ def random_string(length=6,prefix=&#39;&#39;):
 def random_string_and_numbers(length=6,prefix=&#39;&#39;):
     return prefix + &#39;&#39;.join(random.choices(string.ascii_uppercase + string.digits, k=length))
 
-def md5(target):
-    if target:
-        return hashlib.md5(&#39;{0}&#39;.format(target).encode()).hexdigest()
+def md5(text):
+    if text:
+        return hashlib.md5(&#39;{0}&#39;.format(text).encode()).hexdigest()
     return None
 
 def random_uuid():
     return str(uuid.uuid4())
 
 def trim(target):
-    if target:
+    if type(target) is str:
         return target.strip()
     return target
 
@@ -171,9 +177,9 @@ def word_wrap_escaped(text,length = 40):
         return &#39;\\n&#39;.join(textwrap.wrap(text, length))
 
 def convert_to_number(value):
-    if value != &#39;&#39;:
+    if value:
         try:
-            if value[0] == &#39;£&#39;:
+            if value[0] in [&#39;£&#39;,&#39;$&#39;,&#39;€&#39;]:
                 return float(re.sub(r&#39;[^\d.]&#39;, &#39;&#39;, value))
             else:
                 return float(value)
@@ -238,10 +244,13 @@ def replace(target_string, string_to_find, string_to_replace):
     return target_string.replace(string_to_find, string_to_replace)
 
 def split_lines(text):
-    return text.split(&#39;\n&#39;)
+    return text.replace(&#39;\r\n&#39;,&#39;\n&#39;).split(&#39;\n&#39;)
 
 def under_debugger():
-    return &#39;pydevd&#39; in sys.modules</code></pre>
+    return &#39;pydevd&#39; in sys.modules
+
+
+convert_to_float = convert_to_number</code></pre>
 </details>
 </section>
 <section>
@@ -336,6 +345,21 @@ def array_find(array:list, item):
     return value</code></pre>
 </details>
 </dd>
+<dt id="osbot_utils.utils.Misc.base64_to_bytes"><code class="name flex">
+<span>def <span class="ident">base64_to_bytes</span></span>(<span>bytes_base64)</span>
+</code></dt>
+<dd>
+<div class="desc"></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def base64_to_bytes(bytes_base64):
+    if type(bytes_base64) is str:
+        bytes_base64 = bytes_base64.encode()
+    return base64.decodebytes(bytes_base64)</code></pre>
+</details>
+</dd>
 <dt id="osbot_utils.utils.Misc.bytes_to_base64"><code class="name flex">
 <span>def <span class="ident">bytes_to_base64</span></span>(<span>bytes)</span>
 </code></dt>
@@ -375,8 +399,29 @@ def array_find(array:list, item):
 </summary>
 <pre><code class="python">def class_name(target):
     if target:
-        return type(target).__name__
-    return None</code></pre>
+        return type(target).__name__</code></pre>
+</details>
+</dd>
+<dt id="osbot_utils.utils.Misc.convert_to_float"><code class="name flex">
+<span>def <span class="ident">convert_to_float</span></span>(<span>value)</span>
+</code></dt>
+<dd>
+<div class="desc"></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def convert_to_number(value):
+    if value:
+        try:
+            if value[0] in [&#39;£&#39;,&#39;$&#39;,&#39;€&#39;]:
+                return float(re.sub(r&#39;[^\d.]&#39;, &#39;&#39;, value))
+            else:
+                return float(value)
+        except:
+          return 0
+    else:
+        return 0</code></pre>
 </details>
 </dd>
 <dt id="osbot_utils.utils.Misc.convert_to_number"><code class="name flex">
@@ -389,9 +434,9 @@ def array_find(array:list, item):
 <span>Expand source code</span>
 </summary>
 <pre><code class="python">def convert_to_number(value):
-    if value != &#39;&#39;:
+    if value:
         try:
-            if value[0] == &#39;£&#39;:
+            if value[0] in [&#39;£&#39;,&#39;$&#39;,&#39;€&#39;]:
                 return float(re.sub(r&#39;[^\d.]&#39;, &#39;&#39;, value))
             else:
                 return float(value)
@@ -477,12 +522,9 @@ def array_find(array:list, item):
 </summary>
 <pre><code class="python">def get_value(target, key, default=None):
     if target is not None:
-        try:
-            value = target.get(key)
-            if value is not None:
-                return value
-        except:
-            pass
+        value = target.get(key)
+        if value is not None:
+            return value
     return default</code></pre>
 </details>
 </dd>
@@ -519,7 +561,7 @@ def array_find(array:list, item):
 </details>
 </dd>
 <dt id="osbot_utils.utils.Misc.md5"><code class="name flex">
-<span>def <span class="ident">md5</span></span>(<span>target)</span>
+<span>def <span class="ident">md5</span></span>(<span>text)</span>
 </code></dt>
 <dd>
 <div class="desc"></div>
@@ -527,9 +569,9 @@ def array_find(array:list, item):
 <summary>
 <span>Expand source code</span>
 </summary>
-<pre><code class="python">def md5(target):
-    if target:
-        return hashlib.md5(&#39;{0}&#39;.format(target).encode()).hexdigest()
+<pre><code class="python">def md5(text):
+    if text:
+        return hashlib.md5(&#39;{0}&#39;.format(text).encode()).hexdigest()
     return None</code></pre>
 </details>
 </dd>
@@ -543,24 +585,10 @@ def array_find(array:list, item):
 <span>Expand source code</span>
 </summary>
 <pre><code class="python">def none_or_empty(target,field):
-    if target:
+    if target and field:
         value = target.get(field)
         return (value is None) or value == &#39;&#39;
     return True</code></pre>
-</details>
-</dd>
-<dt id="osbot_utils.utils.Misc.object_data"><code class="name flex">
-<span>def <span class="ident">object_data</span></span>(<span>target)</span>
-</code></dt>
-<dd>
-<div class="desc"></div>
-<details class="source">
-<summary>
-<span>Expand source code</span>
-</summary>
-<pre><code class="python">def object_data(target):
-    #fields = [field for field in dir(target) if not callable(getattr(target, field)) and not field.startswith(&#34;a__&#34;)]
-    return target.__dict__ # this one seems to do the trick (if not look at the code sample above)</code></pre>
 </details>
 </dd>
 <dt id="osbot_utils.utils.Misc.random_bytes"><code class="name flex">
@@ -586,7 +614,7 @@ def array_find(array:list, item):
 <span>Expand source code</span>
 </summary>
 <pre><code class="python">def random_filename(extension=&#39;.tmp&#39;, length=10):
-    if len(extension) &gt; 0 and  extension[0] != &#39;.&#39; : extension = &#39;.&#39; + extension
+    extension = file_extension_fix(extension)
     return &#39;{0}{1}&#39;.format(&#39;&#39;.join(random.choices(string.ascii_lowercase + string.digits, k=length)) ,  extension)</code></pre>
 </details>
 </dd>
@@ -744,7 +772,20 @@ def array_find(array:list, item):
 <span>Expand source code</span>
 </summary>
 <pre><code class="python">def split_lines(text):
-    return text.split(&#39;\n&#39;)</code></pre>
+    return text.replace(&#39;\r\n&#39;,&#39;\n&#39;).split(&#39;\n&#39;)</code></pre>
+</details>
+</dd>
+<dt id="osbot_utils.utils.Misc.str_to_date"><code class="name flex">
+<span>def <span class="ident">str_to_date</span></span>(<span>str_date, format='%Y-%m-%d %H:%M:%S.%f')</span>
+</code></dt>
+<dd>
+<div class="desc"></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def str_to_date(str_date, format=&#39;%Y-%m-%d %H:%M:%S.%f&#39;):
+    return datetime.strptime(str_date,format)</code></pre>
 </details>
 </dd>
 <dt id="osbot_utils.utils.Misc.to_int"><code class="name flex">
@@ -773,7 +814,7 @@ def array_find(array:list, item):
 <span>Expand source code</span>
 </summary>
 <pre><code class="python">def trim(target):
-    if target:
+    if type(target) is str:
         return target.strip()
     return target</code></pre>
 </details>
@@ -854,9 +895,11 @@ def array_find(array:list, item):
 <li><code><a title="osbot_utils.utils.Misc.array_get" href="#osbot_utils.utils.Misc.array_get">array_get</a></code></li>
 <li><code><a title="osbot_utils.utils.Misc.array_pop" href="#osbot_utils.utils.Misc.array_pop">array_pop</a></code></li>
 <li><code><a title="osbot_utils.utils.Misc.array_pop_and_trim" href="#osbot_utils.utils.Misc.array_pop_and_trim">array_pop_and_trim</a></code></li>
+<li><code><a title="osbot_utils.utils.Misc.base64_to_bytes" href="#osbot_utils.utils.Misc.base64_to_bytes">base64_to_bytes</a></code></li>
 <li><code><a title="osbot_utils.utils.Misc.bytes_to_base64" href="#osbot_utils.utils.Misc.bytes_to_base64">bytes_to_base64</a></code></li>
 <li><code><a title="osbot_utils.utils.Misc.chunks" href="#osbot_utils.utils.Misc.chunks">chunks</a></code></li>
 <li><code><a title="osbot_utils.utils.Misc.class_name" href="#osbot_utils.utils.Misc.class_name">class_name</a></code></li>
+<li><code><a title="osbot_utils.utils.Misc.convert_to_float" href="#osbot_utils.utils.Misc.convert_to_float">convert_to_float</a></code></li>
 <li><code><a title="osbot_utils.utils.Misc.convert_to_number" href="#osbot_utils.utils.Misc.convert_to_number">convert_to_number</a></code></li>
 <li><code><a title="osbot_utils.utils.Misc.date_now" href="#osbot_utils.utils.Misc.date_now">date_now</a></code></li>
 <li><code><a title="osbot_utils.utils.Misc.get_field" href="#osbot_utils.utils.Misc.get_field">get_field</a></code></li>
@@ -867,7 +910,6 @@ def array_find(array:list, item):
 <li><code><a title="osbot_utils.utils.Misc.last_letter" href="#osbot_utils.utils.Misc.last_letter">last_letter</a></code></li>
 <li><code><a title="osbot_utils.utils.Misc.md5" href="#osbot_utils.utils.Misc.md5">md5</a></code></li>
 <li><code><a title="osbot_utils.utils.Misc.none_or_empty" href="#osbot_utils.utils.Misc.none_or_empty">none_or_empty</a></code></li>
-<li><code><a title="osbot_utils.utils.Misc.object_data" href="#osbot_utils.utils.Misc.object_data">object_data</a></code></li>
 <li><code><a title="osbot_utils.utils.Misc.random_bytes" href="#osbot_utils.utils.Misc.random_bytes">random_bytes</a></code></li>
 <li><code><a title="osbot_utils.utils.Misc.random_filename" href="#osbot_utils.utils.Misc.random_filename">random_filename</a></code></li>
 <li><code><a title="osbot_utils.utils.Misc.random_number" href="#osbot_utils.utils.Misc.random_number">random_number</a></code></li>
@@ -881,6 +923,7 @@ def array_find(array:list, item):
 <li><code><a title="osbot_utils.utils.Misc.remove_html_tags" href="#osbot_utils.utils.Misc.remove_html_tags">remove_html_tags</a></code></li>
 <li><code><a title="osbot_utils.utils.Misc.replace" href="#osbot_utils.utils.Misc.replace">replace</a></code></li>
 <li><code><a title="osbot_utils.utils.Misc.split_lines" href="#osbot_utils.utils.Misc.split_lines">split_lines</a></code></li>
+<li><code><a title="osbot_utils.utils.Misc.str_to_date" href="#osbot_utils.utils.Misc.str_to_date">str_to_date</a></code></li>
 <li><code><a title="osbot_utils.utils.Misc.to_int" href="#osbot_utils.utils.Misc.to_int">to_int</a></code></li>
 <li><code><a title="osbot_utils.utils.Misc.trim" href="#osbot_utils.utils.Misc.trim">trim</a></code></li>
 <li><code><a title="osbot_utils.utils.Misc.under_debugger" href="#osbot_utils.utils.Misc.under_debugger">under_debugger</a></code></li>

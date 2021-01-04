@@ -50,7 +50,6 @@ class Log_To_String():
         self.logger.addHandler(self.string_handler)
 
     def contents(self):
-        #self.string_stream.flush()
         return self.string_stream.getvalue()
 
     def set_level(self, level):
@@ -107,7 +106,6 @@ class Log_To_String():
         self.logger.addHandler(self.string_handler)
 
     def contents(self):
-        #self.string_stream.flush()
         return self.string_stream.getvalue()
 
     def set_level(self, level):
@@ -151,7 +149,6 @@ class Log_To_String():
 <span>Expand source code</span>
 </summary>
 <pre><code class="python">def contents(self):
-    #self.string_stream.flush()
     return self.string_stream.getvalue()</code></pre>
 </details>
 </dd>
