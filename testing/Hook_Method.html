@@ -46,10 +46,22 @@ class Hook_Method:
         self.unwrap()
 
     def add_on_after_call(self, on_after_call):
+        &#34;&#34;&#34;
+        method to be after before the Hooked call
+
+        method signature: def on_after_call(return_value,  *args, **kwargs):
+        should return: return_value
+        &#34;&#34;&#34;
         self.on_after_call.append(on_after_call)
         return self
 
     def add_on_before_call(self, on_before_call):
+        &#34;&#34;&#34;
+        method to be called before the Hooked call
+
+        method signature: def on_after_call(*args, **kwargs):
+        should return: (args, kwargs)
+        &#34;&#34;&#34;
         self.on_before_call.append(on_before_call)
         return self
 
@@ -60,17 +72,29 @@ class Hook_Method:
         if len(self.calls) &gt; 0:
             return self.calls[-1]
 
-    def after_call(self, return_value):
+    def after_call(self, return_value, *args, **kwargs):
+        &#34;&#34;&#34;
+        call all methods added via `add_on_after_call` with the params: return_value, *args, **kwargs
+        return value from each on_after_call will on override existing return_value
+        &#34;&#34;&#34;
         for method in self.on_after_call:
-            return_value = method(return_value)
+            return_value = method(return_value, *args, **kwargs)
         return return_value
 
     def before_call(self, *args, **kwargs):
+        &#34;&#34;&#34;
+        call all methods added via `add_on_before_call` with the params: *args, **kwargs
+        return value is expected to be args and kwargs on each on_after_call which will on override existing args and kwargs values
+        &#34;&#34;&#34;
         for method in self.on_before_call:
             (args, kwargs) = method(*args, **kwargs)
         return (args, kwargs)
 
-
+    def set_mock_call(self, mock_call):
+        &#34;&#34;&#34;
+        Use this to simulate a call to the Hooked Method (the
+        &#34;&#34;&#34;
+        self.mock_call = mock_call
 
     def wrap(self):
 
@@ -81,7 +105,7 @@ class Hook_Method:
             else:
                 (args, kwargs) = self.before_call(*args, **kwargs)
                 return_value   = self.target(*args, **kwargs)
-                return_value   = self.after_call(return_value)
+                return_value   = self.after_call(return_value, args, kwargs)
 
             call = {
                         &#39;args&#39;        : args,
@@ -137,10 +161,22 @@ class Hook_Method:
         self.unwrap()
 
     def add_on_after_call(self, on_after_call):
+        &#34;&#34;&#34;
+        method to be after before the Hooked call
+
+        method signature: def on_after_call(return_value,  *args, **kwargs):
+        should return: return_value
+        &#34;&#34;&#34;
         self.on_after_call.append(on_after_call)
         return self
 
     def add_on_before_call(self, on_before_call):
+        &#34;&#34;&#34;
+        method to be called before the Hooked call
+
+        method signature: def on_after_call(*args, **kwargs):
+        should return: (args, kwargs)
+        &#34;&#34;&#34;
         self.on_before_call.append(on_before_call)
         return self
 
@@ -151,17 +187,29 @@ class Hook_Method:
         if len(self.calls) &gt; 0:
             return self.calls[-1]
 
-    def after_call(self, return_value):
+    def after_call(self, return_value, *args, **kwargs):
+        &#34;&#34;&#34;
+        call all methods added via `add_on_after_call` with the params: return_value, *args, **kwargs
+        return value from each on_after_call will on override existing return_value
+        &#34;&#34;&#34;
         for method in self.on_after_call:
-            return_value = method(return_value)
+            return_value = method(return_value, *args, **kwargs)
         return return_value
 
     def before_call(self, *args, **kwargs):
+        &#34;&#34;&#34;
+        call all methods added via `add_on_before_call` with the params: *args, **kwargs
+        return value is expected to be args and kwargs on each on_after_call which will on override existing args and kwargs values
+        &#34;&#34;&#34;
         for method in self.on_before_call:
             (args, kwargs) = method(*args, **kwargs)
         return (args, kwargs)
 
-
+    def set_mock_call(self, mock_call):
+        &#34;&#34;&#34;
+        Use this to simulate a call to the Hooked Method (the
+        &#34;&#34;&#34;
+        self.mock_call = mock_call
 
     def wrap(self):
 
@@ -172,7 +220,7 @@ class Hook_Method:
             else:
                 (args, kwargs) = self.before_call(*args, **kwargs)
                 return_value   = self.target(*args, **kwargs)
-                return_value   = self.after_call(return_value)
+                return_value   = self.after_call(return_value, args, kwargs)
 
             call = {
                         &#39;args&#39;        : args,
@@ -195,12 +243,21 @@ class Hook_Method:
 <span>def <span class="ident">add_on_after_call</span></span>(<span>self, on_after_call)</span>
 </code></dt>
 <dd>
-<div class="desc"></div>
+<div class="desc"><p>method to be after before the Hooked call</p>
+<p>method signature: def on_after_call(return_value,
+<em>args, </em>*kwargs):
+should return: return_value</p></div>
 <details class="source">
 <summary>
 <span>Expand source code</span>
 </summary>
 <pre><code class="python">def add_on_after_call(self, on_after_call):
+    &#34;&#34;&#34;
+    method to be after before the Hooked call
+
+    method signature: def on_after_call(return_value,  *args, **kwargs):
+    should return: return_value
+    &#34;&#34;&#34;
     self.on_after_call.append(on_after_call)
     return self</code></pre>
 </details>
@@ -209,28 +266,41 @@ class Hook_Method:
 <span>def <span class="ident">add_on_before_call</span></span>(<span>self, on_before_call)</span>
 </code></dt>
 <dd>
-<div class="desc"></div>
+<div class="desc"><p>method to be called before the Hooked call</p>
+<p>method signature: def on_after_call(<em>args, </em>*kwargs):
+should return: (args, kwargs)</p></div>
 <details class="source">
 <summary>
 <span>Expand source code</span>
 </summary>
 <pre><code class="python">def add_on_before_call(self, on_before_call):
+    &#34;&#34;&#34;
+    method to be called before the Hooked call
+
+    method signature: def on_after_call(*args, **kwargs):
+    should return: (args, kwargs)
+    &#34;&#34;&#34;
     self.on_before_call.append(on_before_call)
     return self</code></pre>
 </details>
 </dd>
 <dt id="osbot_utils.testing.Hook_Method.Hook_Method.after_call"><code class="name flex">
-<span>def <span class="ident">after_call</span></span>(<span>self, return_value)</span>
+<span>def <span class="ident">after_call</span></span>(<span>self, return_value, *args, **kwargs)</span>
 </code></dt>
 <dd>
-<div class="desc"></div>
+<div class="desc"><p>call all methods added via <code>add_on_after_call</code> with the params: return_value, <em>args, </em>*kwargs
+return value from each on_after_call will on override existing return_value</p></div>
 <details class="source">
 <summary>
 <span>Expand source code</span>
 </summary>
-<pre><code class="python">def after_call(self, return_value):
+<pre><code class="python">def after_call(self, return_value, *args, **kwargs):
+    &#34;&#34;&#34;
+    call all methods added via `add_on_after_call` with the params: return_value, *args, **kwargs
+    return value from each on_after_call will on override existing return_value
+    &#34;&#34;&#34;
     for method in self.on_after_call:
-        return_value = method(return_value)
+        return_value = method(return_value, *args, **kwargs)
     return return_value</code></pre>
 </details>
 </dd>
@@ -238,12 +308,17 @@ class Hook_Method:
 <span>def <span class="ident">before_call</span></span>(<span>self, *args, **kwargs)</span>
 </code></dt>
 <dd>
-<div class="desc"></div>
+<div class="desc"><p>call all methods added via <code>add_on_before_call</code> with the params: <em>args, </em>*kwargs
+return value is expected to be args and kwargs on each on_after_call which will on override existing args and kwargs values</p></div>
 <details class="source">
 <summary>
 <span>Expand source code</span>
 </summary>
 <pre><code class="python">def before_call(self, *args, **kwargs):
+    &#34;&#34;&#34;
+    call all methods added via `add_on_before_call` with the params: *args, **kwargs
+    return value is expected to be args and kwargs on each on_after_call which will on override existing args and kwargs values
+    &#34;&#34;&#34;
     for method in self.on_before_call:
         (args, kwargs) = method(*args, **kwargs)
     return (args, kwargs)</code></pre>
@@ -274,6 +349,22 @@ class Hook_Method:
 <pre><code class="python">def calls_last_one(self):
     if len(self.calls) &gt; 0:
         return self.calls[-1]</code></pre>
+</details>
+</dd>
+<dt id="osbot_utils.testing.Hook_Method.Hook_Method.set_mock_call"><code class="name flex">
+<span>def <span class="ident">set_mock_call</span></span>(<span>self, mock_call)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Use this to simulate a call to the Hooked Method (the</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def set_mock_call(self, mock_call):
+    &#34;&#34;&#34;
+    Use this to simulate a call to the Hooked Method (the
+    &#34;&#34;&#34;
+    self.mock_call = mock_call</code></pre>
 </details>
 </dd>
 <dt id="osbot_utils.testing.Hook_Method.Hook_Method.unwrap"><code class="name flex">
@@ -307,7 +398,7 @@ class Hook_Method:
         else:
             (args, kwargs) = self.before_call(*args, **kwargs)
             return_value   = self.target(*args, **kwargs)
-            return_value   = self.after_call(return_value)
+            return_value   = self.after_call(return_value, args, kwargs)
 
         call = {
                     &#39;args&#39;        : args,
@@ -349,6 +440,7 @@ class Hook_Method:
 <li><code><a title="osbot_utils.testing.Hook_Method.Hook_Method.before_call" href="#osbot_utils.testing.Hook_Method.Hook_Method.before_call">before_call</a></code></li>
 <li><code><a title="osbot_utils.testing.Hook_Method.Hook_Method.calls_count" href="#osbot_utils.testing.Hook_Method.Hook_Method.calls_count">calls_count</a></code></li>
 <li><code><a title="osbot_utils.testing.Hook_Method.Hook_Method.calls_last_one" href="#osbot_utils.testing.Hook_Method.Hook_Method.calls_last_one">calls_last_one</a></code></li>
+<li><code><a title="osbot_utils.testing.Hook_Method.Hook_Method.set_mock_call" href="#osbot_utils.testing.Hook_Method.Hook_Method.set_mock_call">set_mock_call</a></code></li>
 <li><code><a title="osbot_utils.testing.Hook_Method.Hook_Method.unwrap" href="#osbot_utils.testing.Hook_Method.Hook_Method.unwrap">unwrap</a></code></li>
 <li><code><a title="osbot_utils.testing.Hook_Method.Hook_Method.wrap" href="#osbot_utils.testing.Hook_Method.Hook_Method.wrap">wrap</a></code></li>
 </ul>
