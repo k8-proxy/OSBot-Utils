@@ -331,7 +331,8 @@ def word_wrap_escaped(text,length = 40):
 
 bytes_to_string  = bytes_to_str
 convert_to_float = convert_to_number
-new_guid         = random_uuid</code></pre>
+new_guid         = random_uuid
+str_lines        = split_lines</code></pre>
 </details>
 </section>
 <section>
@@ -1096,6 +1097,19 @@ new_guid         = random_uuid</code></pre>
     return remove_multiple_spaces(target).split(&#39; &#39;)</code></pre>
 </details>
 </dd>
+<dt id="osbot_utils.utils.Misc.str_lines"><code class="name flex">
+<span>def <span class="ident">str_lines</span></span>(<span>text)</span>
+</code></dt>
+<dd>
+<div class="desc"></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def split_lines(text):
+    return text.replace(&#39;\r\n&#39;,&#39;\n&#39;).split(&#39;\n&#39;)</code></pre>
+</details>
+</dd>
 <dt id="osbot_utils.utils.Misc.str_md5"><code class="name flex">
 <span>def <span class="ident">str_md5</span></span>(<span>text: str)</span>
 </code></dt>
@@ -1333,6 +1347,7 @@ new_guid         = random_uuid</code></pre>
 <li><code><a title="osbot_utils.utils.Misc.sorted_set" href="#osbot_utils.utils.Misc.sorted_set">sorted_set</a></code></li>
 <li><code><a title="osbot_utils.utils.Misc.split_lines" href="#osbot_utils.utils.Misc.split_lines">split_lines</a></code></li>
 <li><code><a title="osbot_utils.utils.Misc.split_spaces" href="#osbot_utils.utils.Misc.split_spaces">split_spaces</a></code></li>
+<li><code><a title="osbot_utils.utils.Misc.str_lines" href="#osbot_utils.utils.Misc.str_lines">str_lines</a></code></li>
 <li><code><a title="osbot_utils.utils.Misc.str_md5" href="#osbot_utils.utils.Misc.str_md5">str_md5</a></code></li>
 <li><code><a title="osbot_utils.utils.Misc.str_sha256" href="#osbot_utils.utils.Misc.str_sha256">str_sha256</a></code></li>
 <li><code><a title="osbot_utils.utils.Misc.str_to_base64" href="#osbot_utils.utils.Misc.str_to_base64">str_to_base64</a></code></li>
