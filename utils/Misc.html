@@ -28,15 +28,23 @@
 </summary>
 <pre><code class="python">import base64
 import hashlib
+import os
 import random
 import string
 import sys
 import textwrap
 import re
 import uuid
+import warnings
 from datetime import datetime
 from secrets import token_bytes
 from time import sleep
+
+from dotenv import load_dotenv
+from osbot_utils.fluent.Fluent_Dict import Fluent_Dict
+
+from osbot_utils.fluent.Fluent_List import Fluent_List
+
 from osbot_utils.decorators.methods.function_type_check import function_type_check
 from osbot_utils.utils.Files import file_extension_fix
 
@@ -81,8 +89,14 @@ def base64_to_bytes(bytes_base64):
         bytes_base64 = bytes_base64.encode()
     return base64.decodebytes(bytes_base64)
 
+def base64_to_str(target):
+    return bytes_to_str(base64_to_bytes(target))
+
 def bytes_to_base64(bytes):
     return base64.b64encode(bytes).decode()
+
+def bytes_to_str(target, encoding=&#39;ascii&#39;):
+    return target.decode(encoding=encoding)
 
 def chunks(items:list, split: int):
     if items and split and split &gt; 0:
@@ -93,11 +107,50 @@ def class_name(target):
     if target:
         return type(target).__name__
 
+def convert_to_number(value):
+    if value:
+        try:
+            if value[0] in [&#39;£&#39;,&#39;$&#39;,&#39;€&#39;]:
+                return float(re.sub(r&#39;[^\d.]&#39;, &#39;&#39;, value))
+            else:
+                return float(value)
+        except:
+          return 0
+    else:
+        return 0
+
 def date_now():
     return str(datetime.now())
 
-def str_to_date(str_date, format=&#39;%Y-%m-%d %H:%M:%S.%f&#39;):
-    return datetime.strptime(str_date,format)
+def env_value(var_name):
+    return env_vars().get(var_name, None)
+
+def env_vars():
+    &#34;&#34;&#34;
+    reload data from .env file and return dictionary with current environment variables
+    &#34;&#34;&#34;
+    load_dotenv()
+    vars = os.environ
+    data = {}
+    for key in vars:
+        data[key] = vars[key]
+    return data
+
+def env_vars_list():
+    return list_set(env_vars())
+
+def flist(target):
+    return Fluent_List(target)
+
+def get_field(target, field, default=None):
+    if target is not None:
+        try:
+            value = getattr(target, field)
+            if value is not None:
+                return value
+        except:
+            pass
+    return default
 
 def get_value(target, key, default=None):
     if target is not None:
@@ -112,6 +165,13 @@ def get_random_color(max=5):
     colors = [&#39;skyblue&#39;, &#39;darkseagreen&#39;, &#39;palevioletred&#39;, &#39;coral&#39;, &#39;darkgray&#39;]
     return colors[random_number(0, max-1)]
 
+def get_missing_fields(target,field):
+    missing_fields = []
+    for field in field:
+        if get_field(target, field) is None:
+            missing_fields.append(field)
+    return missing_fields
+
 def is_number(value):
     try:
         int(value)
@@ -120,16 +180,48 @@ def is_number(value):
         pass
     return False
 
+def ignore_warning__unclosed_ssl():
+    warnings.filterwarnings(&#34;ignore&#34;, category=ResourceWarning, message=&#34;unclosed.*&lt;ssl.SSLSocket.*&gt;&#34;)
+
+def last_letter(text):
+    if text and (type(text) is str) and len(text) &gt; 0:
+        return text[-1]
+
+def list_set(target):
+    return sorted(list(set(target)))
+
+def list_index_by(values, index_by):
+    results = {}
+    for item in values:
+        results[item.get(index_by)] = item
+    return Fluent_Dict(results)
+
+def list_group_by(values, group_by):
+    results = {}
+    for item in values:
+        value = item.get(group_by)
+        if results.get(value) is None: results[value] = []
+        results[value].append(item)
+    return results
+
+def lower(target : str):
+    if target:
+        return target.lower()
+    return &#34;&#34;
+
+def md5(text):
+    if text:
+        return hashlib.md5(&#39;{0}&#39;.format(text).encode()).hexdigest()
+    return None
+
 def none_or_empty(target,field):
     if target and field:
         value = target.get(field)
         return (value is None) or value == &#39;&#39;
     return True
 
-# def object_data(target):
-#     #fields = [field for field in dir(target) if not callable(getattr(target, field)) and not field.startswith(&#34;a__&#34;)]
-#     return target.__dict__ # this one seems to do the trick (if not look at the code sample above)
-
+def random_bytes(length=24):
+    return token_bytes(length)
 
 def random_filename(extension=&#39;.tmp&#39;, length=10):
     extension = file_extension_fix(extension)
@@ -140,84 +232,6 @@ def random_port(min=20000,max=65000):
 
 def random_number(min=1,max=65000):
     return random.randint(min, max)
-
-def random_string(length=6,prefix=&#39;&#39;):
-    return prefix + &#39;&#39;.join(random.choices(string.ascii_uppercase, k=length))
-
-def random_string_and_numbers(length=6,prefix=&#39;&#39;):
-    return prefix + &#39;&#39;.join(random.choices(string.ascii_uppercase + string.digits, k=length))
-
-def md5(text):
-    if text:
-        return hashlib.md5(&#39;{0}&#39;.format(text).encode()).hexdigest()
-    return None
-
-def random_uuid():
-    return str(uuid.uuid4())
-
-def trim(target):
-    if type(target) is str:
-        return target.strip()
-    return target
-
-def to_int(value, default=0):
-    try:
-        return int(value)
-    except:
-        return default
-
-def wait(seconds):
-    sleep(seconds)
-
-def word_wrap(text,length = 40):
-    return &#39;\n&#39;.join(textwrap.wrap(text, length))
-
-def word_wrap_escaped(text,length = 40):
-    if text:
-        return &#39;\\n&#39;.join(textwrap.wrap(text, length))
-
-def convert_to_number(value):
-    if value:
-        try:
-            if value[0] in [&#39;£&#39;,&#39;$&#39;,&#39;€&#39;]:
-                return float(re.sub(r&#39;[^\d.]&#39;, &#39;&#39;, value))
-            else:
-                return float(value)
-        except:
-          return 0
-    else:
-        return 0
-
-def remove_html_tags(html):
-    if html:
-        TAG_RE = re.compile(r&#39;&lt;[^&gt;]+&gt;&#39;)
-        return TAG_RE.sub(&#39;&#39;, html).replace(&#39;&amp;nbsp;&#39;, &#39; &#39;)
-
-
-def get_field(target, field, default=None):
-    if target is not None:
-        try:
-            value = getattr(target, field)
-            if value is not None:
-                return value
-        except:
-            pass
-    return default
-
-def get_missing_fields(target,field):
-    missing_fields = []
-    for field in field:
-        if get_field(target, field) is None:
-            missing_fields.append(field)
-    return missing_fields
-
-def last_letter(text):
-    if text and (type(text) is str) and len(text) &gt; 0:
-        return text[-1]
-
-def random_bytes(length=24):
-    return token_bytes(length)
-
 
 def random_password(length=24, prefix=&#39;&#39;):
     password = prefix + &#39;&#39;.join(random.choices(string.ascii_lowercase  +
@@ -231,25 +245,85 @@ def random_password(length=24, prefix=&#39;&#39;):
         password = password.replace(item, &#39;_&#39;)
     return password
 
+def random_string(length=6,prefix=&#39;&#39;):
+    return prefix + &#39;&#39;.join(random.choices(string.ascii_uppercase, k=length))
+
+def random_string_and_numbers(length=6,prefix=&#39;&#39;):
+    return prefix + &#39;&#39;.join(random.choices(string.ascii_uppercase + string.digits, k=length))
+
 def random_text(prefix=None,length=12):
     if prefix is None: prefix = &#39;text_&#39;
     if last_letter(prefix) != &#39;_&#39;:
         prefix += &#39;_&#39;
     return random_string_and_numbers(length=length, prefix=prefix)
 
+def random_uuid():
+    return str(uuid.uuid4())
+
 def remove(target_string, string_to_remove):
     return replace(target_string, string_to_remove, &#39;&#39;)
+
+def remove_multiple_spaces(target):
+    return re.sub(&#39; +&#39;, &#39; &#39;, target)
 
 def replace(target_string, string_to_find, string_to_replace):
     return target_string.replace(string_to_find, string_to_replace)
 
+def remove_html_tags(html):
+    if html:
+        TAG_RE = re.compile(r&#39;&lt;[^&gt;]+&gt;&#39;)
+        return TAG_RE.sub(&#39;&#39;, html).replace(&#39;&amp;nbsp;&#39;, &#39; &#39;)
+
 def split_lines(text):
     return text.replace(&#39;\r\n&#39;,&#39;\n&#39;).split(&#39;\n&#39;)
+
+def split_spaces(target):
+    return remove_multiple_spaces(target).split(&#39; &#39;)
+
+def sorted_set(target : object):
+    if target:
+        return sorted(set(target))
+    return []
+
+def str_to_base64(target):
+    return bytes_to_base64(str_to_bytes(target))
+
+def str_to_bytes(target):
+    return target.encode()
+
+def str_to_date(str_date, format=&#39;%Y-%m-%d %H:%M:%S.%f&#39;):
+    return datetime.strptime(str_date,format)
+
+def to_int(value, default=0):
+    try:
+        return int(value)
+    except:
+        return default
+
+def trim(target):
+    if type(target) is str:
+        return target.strip()
+    return &#34;&#34;
 
 def under_debugger():
     return &#39;pydevd&#39; in sys.modules
 
+def upper(target : str):
+    if target:
+        return target.upper()
+    return &#34;&#34;
 
+def wait(seconds):
+    sleep(seconds)
+
+def word_wrap(text,length = 40):
+    return &#39;\n&#39;.join(textwrap.wrap(text, length))
+
+def word_wrap_escaped(text,length = 40):
+    if text:
+        return &#39;\\n&#39;.join(textwrap.wrap(text, length))
+
+bytes_to_string = bytes_to_str
 convert_to_float = convert_to_number</code></pre>
 </details>
 </section>
@@ -360,6 +434,19 @@ def array_find(array:list, item):
     return base64.decodebytes(bytes_base64)</code></pre>
 </details>
 </dd>
+<dt id="osbot_utils.utils.Misc.base64_to_str"><code class="name flex">
+<span>def <span class="ident">base64_to_str</span></span>(<span>target)</span>
+</code></dt>
+<dd>
+<div class="desc"></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def base64_to_str(target):
+    return bytes_to_str(base64_to_bytes(target))</code></pre>
+</details>
+</dd>
 <dt id="osbot_utils.utils.Misc.bytes_to_base64"><code class="name flex">
 <span>def <span class="ident">bytes_to_base64</span></span>(<span>bytes)</span>
 </code></dt>
@@ -371,6 +458,32 @@ def array_find(array:list, item):
 </summary>
 <pre><code class="python">def bytes_to_base64(bytes):
     return base64.b64encode(bytes).decode()</code></pre>
+</details>
+</dd>
+<dt id="osbot_utils.utils.Misc.bytes_to_str"><code class="name flex">
+<span>def <span class="ident">bytes_to_str</span></span>(<span>target, encoding='ascii')</span>
+</code></dt>
+<dd>
+<div class="desc"></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def bytes_to_str(target, encoding=&#39;ascii&#39;):
+    return target.decode(encoding=encoding)</code></pre>
+</details>
+</dd>
+<dt id="osbot_utils.utils.Misc.bytes_to_string"><code class="name flex">
+<span>def <span class="ident">bytes_to_string</span></span>(<span>target, encoding='ascii')</span>
+</code></dt>
+<dd>
+<div class="desc"></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def bytes_to_str(target, encoding=&#39;ascii&#39;):
+    return target.decode(encoding=encoding)</code></pre>
 </details>
 </dd>
 <dt id="osbot_utils.utils.Misc.chunks"><code class="name flex">
@@ -459,6 +572,66 @@ def array_find(array:list, item):
     return str(datetime.now())</code></pre>
 </details>
 </dd>
+<dt id="osbot_utils.utils.Misc.env_value"><code class="name flex">
+<span>def <span class="ident">env_value</span></span>(<span>var_name)</span>
+</code></dt>
+<dd>
+<div class="desc"></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def env_value(var_name):
+    return env_vars().get(var_name, None)</code></pre>
+</details>
+</dd>
+<dt id="osbot_utils.utils.Misc.env_vars"><code class="name flex">
+<span>def <span class="ident">env_vars</span></span>(<span>)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>reload data from .env file and return dictionary with current environment variables</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def env_vars():
+    &#34;&#34;&#34;
+    reload data from .env file and return dictionary with current environment variables
+    &#34;&#34;&#34;
+    load_dotenv()
+    vars = os.environ
+    data = {}
+    for key in vars:
+        data[key] = vars[key]
+    return data</code></pre>
+</details>
+</dd>
+<dt id="osbot_utils.utils.Misc.env_vars_list"><code class="name flex">
+<span>def <span class="ident">env_vars_list</span></span>(<span>)</span>
+</code></dt>
+<dd>
+<div class="desc"></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def env_vars_list():
+    return list_set(env_vars())</code></pre>
+</details>
+</dd>
+<dt id="osbot_utils.utils.Misc.flist"><code class="name flex">
+<span>def <span class="ident">flist</span></span>(<span>target)</span>
+</code></dt>
+<dd>
+<div class="desc"></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def flist(target):
+    return Fluent_List(target)</code></pre>
+</details>
+</dd>
 <dt id="osbot_utils.utils.Misc.get_field"><code class="name flex">
 <span>def <span class="ident">get_field</span></span>(<span>target, field, default=None)</span>
 </code></dt>
@@ -528,6 +701,19 @@ def array_find(array:list, item):
     return default</code></pre>
 </details>
 </dd>
+<dt id="osbot_utils.utils.Misc.ignore_warning__unclosed_ssl"><code class="name flex">
+<span>def <span class="ident">ignore_warning__unclosed_ssl</span></span>(<span>)</span>
+</code></dt>
+<dd>
+<div class="desc"></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def ignore_warning__unclosed_ssl():
+    warnings.filterwarnings(&#34;ignore&#34;, category=ResourceWarning, message=&#34;unclosed.*&lt;ssl.SSLSocket.*&gt;&#34;)</code></pre>
+</details>
+</dd>
 <dt id="osbot_utils.utils.Misc.is_number"><code class="name flex">
 <span>def <span class="ident">is_number</span></span>(<span>value)</span>
 </code></dt>
@@ -558,6 +744,68 @@ def array_find(array:list, item):
 <pre><code class="python">def last_letter(text):
     if text and (type(text) is str) and len(text) &gt; 0:
         return text[-1]</code></pre>
+</details>
+</dd>
+<dt id="osbot_utils.utils.Misc.list_group_by"><code class="name flex">
+<span>def <span class="ident">list_group_by</span></span>(<span>values, group_by)</span>
+</code></dt>
+<dd>
+<div class="desc"></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def list_group_by(values, group_by):
+    results = {}
+    for item in values:
+        value = item.get(group_by)
+        if results.get(value) is None: results[value] = []
+        results[value].append(item)
+    return results</code></pre>
+</details>
+</dd>
+<dt id="osbot_utils.utils.Misc.list_index_by"><code class="name flex">
+<span>def <span class="ident">list_index_by</span></span>(<span>values, index_by)</span>
+</code></dt>
+<dd>
+<div class="desc"></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def list_index_by(values, index_by):
+    results = {}
+    for item in values:
+        results[item.get(index_by)] = item
+    return Fluent_Dict(results)</code></pre>
+</details>
+</dd>
+<dt id="osbot_utils.utils.Misc.list_set"><code class="name flex">
+<span>def <span class="ident">list_set</span></span>(<span>target)</span>
+</code></dt>
+<dd>
+<div class="desc"></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def list_set(target):
+    return sorted(list(set(target)))</code></pre>
+</details>
+</dd>
+<dt id="osbot_utils.utils.Misc.lower"><code class="name flex">
+<span>def <span class="ident">lower</span></span>(<span>target: str)</span>
+</code></dt>
+<dd>
+<div class="desc"></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def lower(target : str):
+    if target:
+        return target.lower()
+    return &#34;&#34;</code></pre>
 </details>
 </dd>
 <dt id="osbot_utils.utils.Misc.md5"><code class="name flex">
@@ -749,6 +997,19 @@ def array_find(array:list, item):
         return TAG_RE.sub(&#39;&#39;, html).replace(&#39;&amp;nbsp;&#39;, &#39; &#39;)</code></pre>
 </details>
 </dd>
+<dt id="osbot_utils.utils.Misc.remove_multiple_spaces"><code class="name flex">
+<span>def <span class="ident">remove_multiple_spaces</span></span>(<span>target)</span>
+</code></dt>
+<dd>
+<div class="desc"></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def remove_multiple_spaces(target):
+    return re.sub(&#39; +&#39;, &#39; &#39;, target)</code></pre>
+</details>
+</dd>
 <dt id="osbot_utils.utils.Misc.replace"><code class="name flex">
 <span>def <span class="ident">replace</span></span>(<span>target_string, string_to_find, string_to_replace)</span>
 </code></dt>
@@ -762,6 +1023,21 @@ def array_find(array:list, item):
     return target_string.replace(string_to_find, string_to_replace)</code></pre>
 </details>
 </dd>
+<dt id="osbot_utils.utils.Misc.sorted_set"><code class="name flex">
+<span>def <span class="ident">sorted_set</span></span>(<span>target: object)</span>
+</code></dt>
+<dd>
+<div class="desc"></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def sorted_set(target : object):
+    if target:
+        return sorted(set(target))
+    return []</code></pre>
+</details>
+</dd>
 <dt id="osbot_utils.utils.Misc.split_lines"><code class="name flex">
 <span>def <span class="ident">split_lines</span></span>(<span>text)</span>
 </code></dt>
@@ -773,6 +1049,45 @@ def array_find(array:list, item):
 </summary>
 <pre><code class="python">def split_lines(text):
     return text.replace(&#39;\r\n&#39;,&#39;\n&#39;).split(&#39;\n&#39;)</code></pre>
+</details>
+</dd>
+<dt id="osbot_utils.utils.Misc.split_spaces"><code class="name flex">
+<span>def <span class="ident">split_spaces</span></span>(<span>target)</span>
+</code></dt>
+<dd>
+<div class="desc"></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def split_spaces(target):
+    return remove_multiple_spaces(target).split(&#39; &#39;)</code></pre>
+</details>
+</dd>
+<dt id="osbot_utils.utils.Misc.str_to_base64"><code class="name flex">
+<span>def <span class="ident">str_to_base64</span></span>(<span>target)</span>
+</code></dt>
+<dd>
+<div class="desc"></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def str_to_base64(target):
+    return bytes_to_base64(str_to_bytes(target))</code></pre>
+</details>
+</dd>
+<dt id="osbot_utils.utils.Misc.str_to_bytes"><code class="name flex">
+<span>def <span class="ident">str_to_bytes</span></span>(<span>target)</span>
+</code></dt>
+<dd>
+<div class="desc"></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def str_to_bytes(target):
+    return target.encode()</code></pre>
 </details>
 </dd>
 <dt id="osbot_utils.utils.Misc.str_to_date"><code class="name flex">
@@ -816,7 +1131,7 @@ def array_find(array:list, item):
 <pre><code class="python">def trim(target):
     if type(target) is str:
         return target.strip()
-    return target</code></pre>
+    return &#34;&#34;</code></pre>
 </details>
 </dd>
 <dt id="osbot_utils.utils.Misc.under_debugger"><code class="name flex">
@@ -830,6 +1145,21 @@ def array_find(array:list, item):
 </summary>
 <pre><code class="python">def under_debugger():
     return &#39;pydevd&#39; in sys.modules</code></pre>
+</details>
+</dd>
+<dt id="osbot_utils.utils.Misc.upper"><code class="name flex">
+<span>def <span class="ident">upper</span></span>(<span>target: str)</span>
+</code></dt>
+<dd>
+<div class="desc"></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def upper(target : str):
+    if target:
+        return target.upper()
+    return &#34;&#34;</code></pre>
 </details>
 </dd>
 <dt id="osbot_utils.utils.Misc.wait"><code class="name flex">
@@ -896,18 +1226,30 @@ def array_find(array:list, item):
 <li><code><a title="osbot_utils.utils.Misc.array_pop" href="#osbot_utils.utils.Misc.array_pop">array_pop</a></code></li>
 <li><code><a title="osbot_utils.utils.Misc.array_pop_and_trim" href="#osbot_utils.utils.Misc.array_pop_and_trim">array_pop_and_trim</a></code></li>
 <li><code><a title="osbot_utils.utils.Misc.base64_to_bytes" href="#osbot_utils.utils.Misc.base64_to_bytes">base64_to_bytes</a></code></li>
+<li><code><a title="osbot_utils.utils.Misc.base64_to_str" href="#osbot_utils.utils.Misc.base64_to_str">base64_to_str</a></code></li>
 <li><code><a title="osbot_utils.utils.Misc.bytes_to_base64" href="#osbot_utils.utils.Misc.bytes_to_base64">bytes_to_base64</a></code></li>
+<li><code><a title="osbot_utils.utils.Misc.bytes_to_str" href="#osbot_utils.utils.Misc.bytes_to_str">bytes_to_str</a></code></li>
+<li><code><a title="osbot_utils.utils.Misc.bytes_to_string" href="#osbot_utils.utils.Misc.bytes_to_string">bytes_to_string</a></code></li>
 <li><code><a title="osbot_utils.utils.Misc.chunks" href="#osbot_utils.utils.Misc.chunks">chunks</a></code></li>
 <li><code><a title="osbot_utils.utils.Misc.class_name" href="#osbot_utils.utils.Misc.class_name">class_name</a></code></li>
 <li><code><a title="osbot_utils.utils.Misc.convert_to_float" href="#osbot_utils.utils.Misc.convert_to_float">convert_to_float</a></code></li>
 <li><code><a title="osbot_utils.utils.Misc.convert_to_number" href="#osbot_utils.utils.Misc.convert_to_number">convert_to_number</a></code></li>
 <li><code><a title="osbot_utils.utils.Misc.date_now" href="#osbot_utils.utils.Misc.date_now">date_now</a></code></li>
+<li><code><a title="osbot_utils.utils.Misc.env_value" href="#osbot_utils.utils.Misc.env_value">env_value</a></code></li>
+<li><code><a title="osbot_utils.utils.Misc.env_vars" href="#osbot_utils.utils.Misc.env_vars">env_vars</a></code></li>
+<li><code><a title="osbot_utils.utils.Misc.env_vars_list" href="#osbot_utils.utils.Misc.env_vars_list">env_vars_list</a></code></li>
+<li><code><a title="osbot_utils.utils.Misc.flist" href="#osbot_utils.utils.Misc.flist">flist</a></code></li>
 <li><code><a title="osbot_utils.utils.Misc.get_field" href="#osbot_utils.utils.Misc.get_field">get_field</a></code></li>
 <li><code><a title="osbot_utils.utils.Misc.get_missing_fields" href="#osbot_utils.utils.Misc.get_missing_fields">get_missing_fields</a></code></li>
 <li><code><a title="osbot_utils.utils.Misc.get_random_color" href="#osbot_utils.utils.Misc.get_random_color">get_random_color</a></code></li>
 <li><code><a title="osbot_utils.utils.Misc.get_value" href="#osbot_utils.utils.Misc.get_value">get_value</a></code></li>
+<li><code><a title="osbot_utils.utils.Misc.ignore_warning__unclosed_ssl" href="#osbot_utils.utils.Misc.ignore_warning__unclosed_ssl">ignore_warning__unclosed_ssl</a></code></li>
 <li><code><a title="osbot_utils.utils.Misc.is_number" href="#osbot_utils.utils.Misc.is_number">is_number</a></code></li>
 <li><code><a title="osbot_utils.utils.Misc.last_letter" href="#osbot_utils.utils.Misc.last_letter">last_letter</a></code></li>
+<li><code><a title="osbot_utils.utils.Misc.list_group_by" href="#osbot_utils.utils.Misc.list_group_by">list_group_by</a></code></li>
+<li><code><a title="osbot_utils.utils.Misc.list_index_by" href="#osbot_utils.utils.Misc.list_index_by">list_index_by</a></code></li>
+<li><code><a title="osbot_utils.utils.Misc.list_set" href="#osbot_utils.utils.Misc.list_set">list_set</a></code></li>
+<li><code><a title="osbot_utils.utils.Misc.lower" href="#osbot_utils.utils.Misc.lower">lower</a></code></li>
 <li><code><a title="osbot_utils.utils.Misc.md5" href="#osbot_utils.utils.Misc.md5">md5</a></code></li>
 <li><code><a title="osbot_utils.utils.Misc.none_or_empty" href="#osbot_utils.utils.Misc.none_or_empty">none_or_empty</a></code></li>
 <li><code><a title="osbot_utils.utils.Misc.random_bytes" href="#osbot_utils.utils.Misc.random_bytes">random_bytes</a></code></li>
@@ -921,12 +1263,18 @@ def array_find(array:list, item):
 <li><code><a title="osbot_utils.utils.Misc.random_uuid" href="#osbot_utils.utils.Misc.random_uuid">random_uuid</a></code></li>
 <li><code><a title="osbot_utils.utils.Misc.remove" href="#osbot_utils.utils.Misc.remove">remove</a></code></li>
 <li><code><a title="osbot_utils.utils.Misc.remove_html_tags" href="#osbot_utils.utils.Misc.remove_html_tags">remove_html_tags</a></code></li>
+<li><code><a title="osbot_utils.utils.Misc.remove_multiple_spaces" href="#osbot_utils.utils.Misc.remove_multiple_spaces">remove_multiple_spaces</a></code></li>
 <li><code><a title="osbot_utils.utils.Misc.replace" href="#osbot_utils.utils.Misc.replace">replace</a></code></li>
+<li><code><a title="osbot_utils.utils.Misc.sorted_set" href="#osbot_utils.utils.Misc.sorted_set">sorted_set</a></code></li>
 <li><code><a title="osbot_utils.utils.Misc.split_lines" href="#osbot_utils.utils.Misc.split_lines">split_lines</a></code></li>
+<li><code><a title="osbot_utils.utils.Misc.split_spaces" href="#osbot_utils.utils.Misc.split_spaces">split_spaces</a></code></li>
+<li><code><a title="osbot_utils.utils.Misc.str_to_base64" href="#osbot_utils.utils.Misc.str_to_base64">str_to_base64</a></code></li>
+<li><code><a title="osbot_utils.utils.Misc.str_to_bytes" href="#osbot_utils.utils.Misc.str_to_bytes">str_to_bytes</a></code></li>
 <li><code><a title="osbot_utils.utils.Misc.str_to_date" href="#osbot_utils.utils.Misc.str_to_date">str_to_date</a></code></li>
 <li><code><a title="osbot_utils.utils.Misc.to_int" href="#osbot_utils.utils.Misc.to_int">to_int</a></code></li>
 <li><code><a title="osbot_utils.utils.Misc.trim" href="#osbot_utils.utils.Misc.trim">trim</a></code></li>
 <li><code><a title="osbot_utils.utils.Misc.under_debugger" href="#osbot_utils.utils.Misc.under_debugger">under_debugger</a></code></li>
+<li><code><a title="osbot_utils.utils.Misc.upper" href="#osbot_utils.utils.Misc.upper">upper</a></code></li>
 <li><code><a title="osbot_utils.utils.Misc.wait" href="#osbot_utils.utils.Misc.wait">wait</a></code></li>
 <li><code><a title="osbot_utils.utils.Misc.word_wrap" href="#osbot_utils.utils.Misc.word_wrap">word_wrap</a></code></li>
 <li><code><a title="osbot_utils.utils.Misc.word_wrap_escaped" href="#osbot_utils.utils.Misc.word_wrap_escaped">word_wrap_escaped</a></code></li>
