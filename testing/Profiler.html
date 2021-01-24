@@ -94,6 +94,15 @@ class Profiler:
             &#39;f_trace_opcodes&#39;: True
         }
 
+    def get_last_event(self):
+        return self.events.pop()
+
+    def get_f_locals(self):
+        return self.get_last_event().get(&#39;f_locals&#39;)
+
+    def get_f_locals_variable(self, var_name):
+        return self.get_f_locals().get(var_name)
+
     def profiling_function(self, frame, event, arg):
         if type(frame.f_locals.get(&#39;self&#39;)) != Profiler:                    # dont&#39; capture traces of the current (Trace) class
             item = self.add_values(self.profile_options, frame)
@@ -190,6 +199,15 @@ class Profiler:
             &#39;f_trace_opcodes&#39;: True
         }
 
+    def get_last_event(self):
+        return self.events.pop()
+
+    def get_f_locals(self):
+        return self.get_last_event().get(&#39;f_locals&#39;)
+
+    def get_f_locals_variable(self, var_name):
+        return self.get_f_locals().get(var_name)
+
     def profiling_function(self, frame, event, arg):
         if type(frame.f_locals.get(&#39;self&#39;)) != Profiler:                    # dont&#39; capture traces of the current (Trace) class
             item = self.add_values(self.profile_options, frame)
@@ -284,6 +302,45 @@ class Profiler:
     }</code></pre>
 </details>
 </dd>
+<dt id="osbot_utils.testing.Profiler.Profiler.get_f_locals"><code class="name flex">
+<span>def <span class="ident">get_f_locals</span></span>(<span>self)</span>
+</code></dt>
+<dd>
+<div class="desc"></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def get_f_locals(self):
+    return self.get_last_event().get(&#39;f_locals&#39;)</code></pre>
+</details>
+</dd>
+<dt id="osbot_utils.testing.Profiler.Profiler.get_f_locals_variable"><code class="name flex">
+<span>def <span class="ident">get_f_locals_variable</span></span>(<span>self, var_name)</span>
+</code></dt>
+<dd>
+<div class="desc"></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def get_f_locals_variable(self, var_name):
+    return self.get_f_locals().get(var_name)</code></pre>
+</details>
+</dd>
+<dt id="osbot_utils.testing.Profiler.Profiler.get_last_event"><code class="name flex">
+<span>def <span class="ident">get_last_event</span></span>(<span>self)</span>
+</code></dt>
+<dd>
+<div class="desc"></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def get_last_event(self):
+    return self.events.pop()</code></pre>
+</details>
+</dd>
 <dt id="osbot_utils.testing.Profiler.Profiler.profiling_function"><code class="name flex">
 <span>def <span class="ident">profiling_function</span></span>(<span>self, frame, event, arg)</span>
 </code></dt>
@@ -341,6 +398,9 @@ class Profiler:
 <li><code><a title="osbot_utils.testing.Profiler.Profiler.add_values" href="#osbot_utils.testing.Profiler.Profiler.add_values">add_values</a></code></li>
 <li><code><a title="osbot_utils.testing.Profiler.Profiler.current_profiler" href="#osbot_utils.testing.Profiler.Profiler.current_profiler">current_profiler</a></code></li>
 <li><code><a title="osbot_utils.testing.Profiler.Profiler.default_profile_options" href="#osbot_utils.testing.Profiler.Profiler.default_profile_options">default_profile_options</a></code></li>
+<li><code><a title="osbot_utils.testing.Profiler.Profiler.get_f_locals" href="#osbot_utils.testing.Profiler.Profiler.get_f_locals">get_f_locals</a></code></li>
+<li><code><a title="osbot_utils.testing.Profiler.Profiler.get_f_locals_variable" href="#osbot_utils.testing.Profiler.Profiler.get_f_locals_variable">get_f_locals_variable</a></code></li>
+<li><code><a title="osbot_utils.testing.Profiler.Profiler.get_last_event" href="#osbot_utils.testing.Profiler.Profiler.get_last_event">get_last_event</a></code></li>
 <li><code><a title="osbot_utils.testing.Profiler.Profiler.profiling_function" href="#osbot_utils.testing.Profiler.Profiler.profiling_function">profiling_function</a></code></li>
 <li><code><a title="osbot_utils.testing.Profiler.Profiler.set_on_event" href="#osbot_utils.testing.Profiler.Profiler.set_on_event">set_on_event</a></code></li>
 </ul>

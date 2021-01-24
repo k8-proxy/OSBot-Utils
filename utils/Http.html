@@ -90,7 +90,7 @@ def GET(url,headers = None, encoding=&#39;utf-8&#39;):
 def GET_bytes(url, headers=None):
     return GET(url, headers=headers, encoding=None)
 
-def GET_bytes_to_file(url,path, headers = None):
+def GET_bytes_to_file(url,path=None, headers = None):
     file_bytes = GET_bytes(url, headers)
     return save_bytes_as_file(file_bytes, path)
 
@@ -178,7 +178,7 @@ def PUT_json(*args, **kwargs):
 </details>
 </dd>
 <dt id="osbot_utils.utils.Http.GET_bytes_to_file"><code class="name flex">
-<span>def <span class="ident">GET_bytes_to_file</span></span>(<span>url, path, headers=None)</span>
+<span>def <span class="ident">GET_bytes_to_file</span></span>(<span>url, path=None, headers=None)</span>
 </code></dt>
 <dd>
 <div class="desc"></div>
@@ -186,7 +186,7 @@ def PUT_json(*args, **kwargs):
 <summary>
 <span>Expand source code</span>
 </summary>
-<pre><code class="python">def GET_bytes_to_file(url,path, headers = None):
+<pre><code class="python">def GET_bytes_to_file(url,path=None, headers = None):
     file_bytes = GET_bytes(url, headers)
     return save_bytes_as_file(file_bytes, path)</code></pre>
 </details>

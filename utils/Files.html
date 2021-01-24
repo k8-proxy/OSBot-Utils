@@ -227,6 +227,10 @@ class Files:
         return tempfile.mkdtemp(suffix, prefix, parent_folder)
 
     @staticmethod
+    def temp_folder_current():
+        return tempfile.gettempdir()
+
+    @staticmethod
     def temp_folder_with_temp_file(prefix=None, suffix=None,parent_folder=None, file_name=&#39;temp_file.txt&#39;, file_contents=&#39;temp_file&#39;):
         folder = temp_folder(prefix,suffix,parent_folder)
         file_create(path_combine(folder,file_name), file_contents)
@@ -345,6 +349,7 @@ save_string_as_file         = Files.save
 temp_file                   = Files.temp_file
 temp_filename               = Files.temp_filename
 temp_folder                 = Files.temp_folder
+temp_folder_current         = Files.temp_folder_current
 temp_folder_with_temp_file  = Files.temp_folder_with_temp_file
 
 zip_files                   = Files.zip_files
@@ -1155,6 +1160,20 @@ def temp_folder(prefix=None, suffix=None,parent_folder=None):
     return tempfile.mkdtemp(suffix, prefix, parent_folder)</code></pre>
 </details>
 </dd>
+<dt id="osbot_utils.utils.Files.temp_folder_current"><code class="name flex">
+<span>def <span class="ident">temp_folder_current</span></span>(<span>)</span>
+</code></dt>
+<dd>
+<div class="desc"></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">@staticmethod
+def temp_folder_current():
+    return tempfile.gettempdir()</code></pre>
+</details>
+</dd>
 <dt id="osbot_utils.utils.Files.temp_folder_with_temp_file"><code class="name flex">
 <span>def <span class="ident">temp_folder_with_temp_file</span></span>(<span>prefix=None, suffix=None, parent_folder=None, file_name='temp_file.txt', file_contents='temp_file')</span>
 </code></dt>
@@ -1442,6 +1461,10 @@ def zip_folder(root_dir, format=&#39;zip&#39;):
     @staticmethod
     def temp_folder(prefix=None, suffix=None,parent_folder=None):
         return tempfile.mkdtemp(suffix, prefix, parent_folder)
+
+    @staticmethod
+    def temp_folder_current():
+        return tempfile.gettempdir()
 
     @staticmethod
     def temp_folder_with_temp_file(prefix=None, suffix=None,parent_folder=None, file_name=&#39;temp_file.txt&#39;, file_contents=&#39;temp_file&#39;):
@@ -2010,6 +2033,20 @@ def temp_folder(prefix=None, suffix=None,parent_folder=None):
     return tempfile.mkdtemp(suffix, prefix, parent_folder)</code></pre>
 </details>
 </dd>
+<dt id="osbot_utils.utils.Files.Files.temp_folder_current"><code class="name flex">
+<span>def <span class="ident">temp_folder_current</span></span>(<span>)</span>
+</code></dt>
+<dd>
+<div class="desc"></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">@staticmethod
+def temp_folder_current():
+    return tempfile.gettempdir()</code></pre>
+</details>
+</dd>
 <dt id="osbot_utils.utils.Files.Files.temp_folder_with_temp_file"><code class="name flex">
 <span>def <span class="ident">temp_folder_with_temp_file</span></span>(<span>prefix=None, suffix=None, parent_folder=None, file_name='temp_file.txt', file_contents='temp_file')</span>
 </code></dt>
@@ -2236,6 +2273,7 @@ def zip_folder(root_dir, format=&#39;zip&#39;):
 <li><code><a title="osbot_utils.utils.Files.temp_file" href="#osbot_utils.utils.Files.temp_file">temp_file</a></code></li>
 <li><code><a title="osbot_utils.utils.Files.temp_filename" href="#osbot_utils.utils.Files.temp_filename">temp_filename</a></code></li>
 <li><code><a title="osbot_utils.utils.Files.temp_folder" href="#osbot_utils.utils.Files.temp_folder">temp_folder</a></code></li>
+<li><code><a title="osbot_utils.utils.Files.temp_folder_current" href="#osbot_utils.utils.Files.temp_folder_current">temp_folder_current</a></code></li>
 <li><code><a title="osbot_utils.utils.Files.temp_folder_with_temp_file" href="#osbot_utils.utils.Files.temp_folder_with_temp_file">temp_folder_with_temp_file</a></code></li>
 <li><code><a title="osbot_utils.utils.Files.unzip_file" href="#osbot_utils.utils.Files.unzip_file">unzip_file</a></code></li>
 <li><code><a title="osbot_utils.utils.Files.zip_file_list" href="#osbot_utils.utils.Files.zip_file_list">zip_file_list</a></code></li>
@@ -2282,6 +2320,7 @@ def zip_folder(root_dir, format=&#39;zip&#39;):
 <li><code><a title="osbot_utils.utils.Files.Files.temp_file" href="#osbot_utils.utils.Files.Files.temp_file">temp_file</a></code></li>
 <li><code><a title="osbot_utils.utils.Files.Files.temp_filename" href="#osbot_utils.utils.Files.Files.temp_filename">temp_filename</a></code></li>
 <li><code><a title="osbot_utils.utils.Files.Files.temp_folder" href="#osbot_utils.utils.Files.Files.temp_folder">temp_folder</a></code></li>
+<li><code><a title="osbot_utils.utils.Files.Files.temp_folder_current" href="#osbot_utils.utils.Files.Files.temp_folder_current">temp_folder_current</a></code></li>
 <li><code><a title="osbot_utils.utils.Files.Files.temp_folder_with_temp_file" href="#osbot_utils.utils.Files.Files.temp_folder_with_temp_file">temp_folder_with_temp_file</a></code></li>
 <li><code><a title="osbot_utils.utils.Files.Files.unzip_file" href="#osbot_utils.utils.Files.Files.unzip_file">unzip_file</a></code></li>
 <li><code><a title="osbot_utils.utils.Files.Files.write" href="#osbot_utils.utils.Files.Files.write">write</a></code></li>
