@@ -33,9 +33,8 @@ import shutil
 import tempfile
 import zipfile
 from   os.path import abspath, join
-
-# todo: add UnitTests to methods below (and refactor these to use the methods in the Files class (so that we don&#39;t have duplicated code)
 from pathlib import Path
+
 
 class Files:
     @staticmethod
@@ -61,6 +60,16 @@ class Files:
         if file_exists(path):
             with file_open_gz(path, mode) as file:
                 return file.read()
+
+    @staticmethod
+    def contents_md5(path):
+        from osbot_utils.utils.Misc import bytes_md5
+        return bytes_md5(file_contents_as_bytes(path))
+
+    @staticmethod
+    def contents_sha256(path):
+        from osbot_utils.utils.Misc import bytes_sha256
+        return bytes_sha256(file_contents_as_bytes(path))
 
     @staticmethod
     def current_folder():
@@ -135,6 +144,11 @@ class Files:
 
         os.makedirs(path)
         return path
+
+    @staticmethod
+    def folder_create_in_parent(path, name):
+        folder_path = path_combine(path, name)
+        return folder_create(folder_path)
 
     @staticmethod
     def folder_delete_all(path):                # this will remove recursively
@@ -292,11 +306,17 @@ class Files:
 # helper methods
 # todo: all all methods above (including the duplicated mappings at the top)
 
+create_folder               = Files.folder_create
+create_folder_in_parent     = Files.folder_create_in_parent
+create_temp_file            = Files.write
 current_folder              = Files.current_folder
+current_temp_folder         = Files.temp_folder_current
 
 file_bytes                  = Files.bytes
 file_contents               = Files.contents
 file_contents_gz            = Files.contents_gz
+file_contents_md5           = Files.contents_md5
+file_contents_sha256        = Files.contents_sha256
 file_contents_as_bytes      = Files.bytes
 file_copy                   = Files.copy
 file_delete                 = Files.delete
@@ -309,12 +329,14 @@ file_extension_fix          = Files.file_extension_fix
 file_find                   = Files.find
 file_lines                  = Files.lines
 file_lines_gz               = Files.lines_gz
+file_md5                    = Files.contents_md5
 file_name                   = Files.file_name
 file_not_exists             = Files.not_exists
 file_open                   = Files.open
 file_open_gz                = Files.open_gz
 file_open_bytes             = Files.open_bytes
 file_save                   = Files.save
+file_sha256                 = Files.contents_sha256
 file_size                   = Files.file_size
 file_stats                  = Files.file_stats
 file_write                  = Files.write
@@ -323,6 +345,7 @@ file_write_gz               = Files.write_gz
 file_unzip                  = Files.unzip_file
 
 folder_create               = Files.folder_create
+folder_create_in_parent     = Files.folder_create_in_parent
 folder_create_temp          = Files.temp_folder
 folder_copy                 = Files.folder_copy
 folder_copy_except          = Files.folder_copy
@@ -365,6 +388,57 @@ unzip_file                  = Files.unzip_file</code></pre>
 <section>
 <h2 class="section-title" id="header-functions">Functions</h2>
 <dl>
+<dt id="osbot_utils.utils.Files.create_folder"><code class="name flex">
+<span>def <span class="ident">create_folder</span></span>(<span>path)</span>
+</code></dt>
+<dd>
+<div class="desc"></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">@staticmethod
+def folder_create(path):
+    if folder_exists(path):
+        return path
+
+    os.makedirs(path)
+    return path</code></pre>
+</details>
+</dd>
+<dt id="osbot_utils.utils.Files.create_folder_in_parent"><code class="name flex">
+<span>def <span class="ident">create_folder_in_parent</span></span>(<span>path, name)</span>
+</code></dt>
+<dd>
+<div class="desc"></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">@staticmethod
+def folder_create_in_parent(path, name):
+    folder_path = path_combine(path, name)
+    return folder_create(folder_path)</code></pre>
+</details>
+</dd>
+<dt id="osbot_utils.utils.Files.create_temp_file"><code class="name flex">
+<span>def <span class="ident">create_temp_file</span></span>(<span>path=None, contents=None, extension=None, mode='w')</span>
+</code></dt>
+<dd>
+<div class="desc"></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">@staticmethod
+def write(path = None,contents=None, extension=None, mode=&#39;w&#39;):
+    path     = path or temp_file(extension)
+    contents = contents or &#39;&#39;
+    with open(file=path, mode=mode) as file:
+        file.write(contents)
+    return path</code></pre>
+</details>
+</dd>
 <dt id="osbot_utils.utils.Files.current_folder"><code class="name flex">
 <span>def <span class="ident">current_folder</span></span>(<span>)</span>
 </code></dt>
@@ -377,6 +451,20 @@ unzip_file                  = Files.unzip_file</code></pre>
 <pre><code class="python">@staticmethod
 def current_folder():
     return Files.path_combine(&#34;.&#34;,&#34;&#34;)</code></pre>
+</details>
+</dd>
+<dt id="osbot_utils.utils.Files.current_temp_folder"><code class="name flex">
+<span>def <span class="ident">current_temp_folder</span></span>(<span>)</span>
+</code></dt>
+<dd>
+<div class="desc"></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">@staticmethod
+def temp_folder_current():
+    return tempfile.gettempdir()</code></pre>
 </details>
 </dd>
 <dt id="osbot_utils.utils.Files.file_bytes"><code class="name flex">
@@ -439,6 +527,36 @@ def contents_gz(path, mode=&#39;rt&#39;):
     if file_exists(path):
         with file_open_gz(path, mode) as file:
             return file.read()</code></pre>
+</details>
+</dd>
+<dt id="osbot_utils.utils.Files.file_contents_md5"><code class="name flex">
+<span>def <span class="ident">file_contents_md5</span></span>(<span>path)</span>
+</code></dt>
+<dd>
+<div class="desc"></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">@staticmethod
+def contents_md5(path):
+    from osbot_utils.utils.Misc import bytes_md5
+    return bytes_md5(file_contents_as_bytes(path))</code></pre>
+</details>
+</dd>
+<dt id="osbot_utils.utils.Files.file_contents_sha256"><code class="name flex">
+<span>def <span class="ident">file_contents_sha256</span></span>(<span>path)</span>
+</code></dt>
+<dd>
+<div class="desc"></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">@staticmethod
+def contents_sha256(path):
+    from osbot_utils.utils.Misc import bytes_sha256
+    return bytes_sha256(file_contents_as_bytes(path))</code></pre>
 </details>
 </dd>
 <dt id="osbot_utils.utils.Files.file_copy"><code class="name flex">
@@ -622,6 +740,21 @@ def lines_gz(path):
             yield line</code></pre>
 </details>
 </dd>
+<dt id="osbot_utils.utils.Files.file_md5"><code class="name flex">
+<span>def <span class="ident">file_md5</span></span>(<span>path)</span>
+</code></dt>
+<dd>
+<div class="desc"></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">@staticmethod
+def contents_md5(path):
+    from osbot_utils.utils.Misc import bytes_md5
+    return bytes_md5(file_contents_as_bytes(path))</code></pre>
+</details>
+</dd>
 <dt id="osbot_utils.utils.Files.file_name"><code class="name flex">
 <span>def <span class="ident">file_name</span></span>(<span>path)</span>
 </code></dt>
@@ -706,6 +839,21 @@ def save(contents, path=None, extension=None):
     path = path or temp_file(extension=extension)
     file_create(path, contents)
     return path</code></pre>
+</details>
+</dd>
+<dt id="osbot_utils.utils.Files.file_sha256"><code class="name flex">
+<span>def <span class="ident">file_sha256</span></span>(<span>path)</span>
+</code></dt>
+<dd>
+<div class="desc"></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">@staticmethod
+def contents_sha256(path):
+    from osbot_utils.utils.Misc import bytes_sha256
+    return bytes_sha256(file_contents_as_bytes(path))</code></pre>
 </details>
 </dd>
 <dt id="osbot_utils.utils.Files.file_size"><code class="name flex">
@@ -854,6 +1002,21 @@ def folder_create(path):
 
     os.makedirs(path)
     return path</code></pre>
+</details>
+</dd>
+<dt id="osbot_utils.utils.Files.folder_create_in_parent"><code class="name flex">
+<span>def <span class="ident">folder_create_in_parent</span></span>(<span>path, name)</span>
+</code></dt>
+<dd>
+<div class="desc"></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">@staticmethod
+def folder_create_in_parent(path, name):
+    folder_path = path_combine(path, name)
+    return folder_create(folder_path)</code></pre>
 </details>
 </dd>
 <dt id="osbot_utils.utils.Files.folder_create_temp"><code class="name flex">
@@ -1299,6 +1462,16 @@ def zip_folder(root_dir, format=&#39;zip&#39;):
                 return file.read()
 
     @staticmethod
+    def contents_md5(path):
+        from osbot_utils.utils.Misc import bytes_md5
+        return bytes_md5(file_contents_as_bytes(path))
+
+    @staticmethod
+    def contents_sha256(path):
+        from osbot_utils.utils.Misc import bytes_sha256
+        return bytes_sha256(file_contents_as_bytes(path))
+
+    @staticmethod
     def current_folder():
         return Files.path_combine(&#34;.&#34;,&#34;&#34;)
 
@@ -1371,6 +1544,11 @@ def zip_folder(root_dir, format=&#39;zip&#39;):
 
         os.makedirs(path)
         return path
+
+    @staticmethod
+    def folder_create_in_parent(path, name):
+        folder_path = path_combine(path, name)
+        return folder_create(folder_path)
 
     @staticmethod
     def folder_delete_all(path):                # this will remove recursively
@@ -1572,6 +1750,36 @@ def contents_gz(path, mode=&#39;rt&#39;):
             return file.read()</code></pre>
 </details>
 </dd>
+<dt id="osbot_utils.utils.Files.Files.contents_md5"><code class="name flex">
+<span>def <span class="ident">contents_md5</span></span>(<span>path)</span>
+</code></dt>
+<dd>
+<div class="desc"></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">@staticmethod
+def contents_md5(path):
+    from osbot_utils.utils.Misc import bytes_md5
+    return bytes_md5(file_contents_as_bytes(path))</code></pre>
+</details>
+</dd>
+<dt id="osbot_utils.utils.Files.Files.contents_sha256"><code class="name flex">
+<span>def <span class="ident">contents_sha256</span></span>(<span>path)</span>
+</code></dt>
+<dd>
+<div class="desc"></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">@staticmethod
+def contents_sha256(path):
+    from osbot_utils.utils.Misc import bytes_sha256
+    return bytes_sha256(file_contents_as_bytes(path))</code></pre>
+</details>
+</dd>
 <dt id="osbot_utils.utils.Files.Files.copy"><code class="name flex">
 <span>def <span class="ident">copy</span></span>(<span>source: str, destination: str) ‑> str</span>
 </code></dt>
@@ -1758,6 +1966,21 @@ def folder_create(path):
 
     os.makedirs(path)
     return path</code></pre>
+</details>
+</dd>
+<dt id="osbot_utils.utils.Files.Files.folder_create_in_parent"><code class="name flex">
+<span>def <span class="ident">folder_create_in_parent</span></span>(<span>path, name)</span>
+</code></dt>
+<dd>
+<div class="desc"></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">@staticmethod
+def folder_create_in_parent(path, name):
+    folder_path = path_combine(path, name)
+    return folder_create(folder_path)</code></pre>
 </details>
 </dd>
 <dt id="osbot_utils.utils.Files.Files.folder_delete_all"><code class="name flex">
@@ -2222,11 +2445,17 @@ def zip_folder(root_dir, format=&#39;zip&#39;):
 </li>
 <li><h3><a href="#header-functions">Functions</a></h3>
 <ul class="">
+<li><code><a title="osbot_utils.utils.Files.create_folder" href="#osbot_utils.utils.Files.create_folder">create_folder</a></code></li>
+<li><code><a title="osbot_utils.utils.Files.create_folder_in_parent" href="#osbot_utils.utils.Files.create_folder_in_parent">create_folder_in_parent</a></code></li>
+<li><code><a title="osbot_utils.utils.Files.create_temp_file" href="#osbot_utils.utils.Files.create_temp_file">create_temp_file</a></code></li>
 <li><code><a title="osbot_utils.utils.Files.current_folder" href="#osbot_utils.utils.Files.current_folder">current_folder</a></code></li>
+<li><code><a title="osbot_utils.utils.Files.current_temp_folder" href="#osbot_utils.utils.Files.current_temp_folder">current_temp_folder</a></code></li>
 <li><code><a title="osbot_utils.utils.Files.file_bytes" href="#osbot_utils.utils.Files.file_bytes">file_bytes</a></code></li>
 <li><code><a title="osbot_utils.utils.Files.file_contents" href="#osbot_utils.utils.Files.file_contents">file_contents</a></code></li>
 <li><code><a title="osbot_utils.utils.Files.file_contents_as_bytes" href="#osbot_utils.utils.Files.file_contents_as_bytes">file_contents_as_bytes</a></code></li>
 <li><code><a title="osbot_utils.utils.Files.file_contents_gz" href="#osbot_utils.utils.Files.file_contents_gz">file_contents_gz</a></code></li>
+<li><code><a title="osbot_utils.utils.Files.file_contents_md5" href="#osbot_utils.utils.Files.file_contents_md5">file_contents_md5</a></code></li>
+<li><code><a title="osbot_utils.utils.Files.file_contents_sha256" href="#osbot_utils.utils.Files.file_contents_sha256">file_contents_sha256</a></code></li>
 <li><code><a title="osbot_utils.utils.Files.file_copy" href="#osbot_utils.utils.Files.file_copy">file_copy</a></code></li>
 <li><code><a title="osbot_utils.utils.Files.file_create" href="#osbot_utils.utils.Files.file_create">file_create</a></code></li>
 <li><code><a title="osbot_utils.utils.Files.file_create_bytes" href="#osbot_utils.utils.Files.file_create_bytes">file_create_bytes</a></code></li>
@@ -2238,12 +2467,14 @@ def zip_folder(root_dir, format=&#39;zip&#39;):
 <li><code><a title="osbot_utils.utils.Files.file_find" href="#osbot_utils.utils.Files.file_find">file_find</a></code></li>
 <li><code><a title="osbot_utils.utils.Files.file_lines" href="#osbot_utils.utils.Files.file_lines">file_lines</a></code></li>
 <li><code><a title="osbot_utils.utils.Files.file_lines_gz" href="#osbot_utils.utils.Files.file_lines_gz">file_lines_gz</a></code></li>
+<li><code><a title="osbot_utils.utils.Files.file_md5" href="#osbot_utils.utils.Files.file_md5">file_md5</a></code></li>
 <li><code><a title="osbot_utils.utils.Files.file_name" href="#osbot_utils.utils.Files.file_name">file_name</a></code></li>
 <li><code><a title="osbot_utils.utils.Files.file_not_exists" href="#osbot_utils.utils.Files.file_not_exists">file_not_exists</a></code></li>
 <li><code><a title="osbot_utils.utils.Files.file_open" href="#osbot_utils.utils.Files.file_open">file_open</a></code></li>
 <li><code><a title="osbot_utils.utils.Files.file_open_bytes" href="#osbot_utils.utils.Files.file_open_bytes">file_open_bytes</a></code></li>
 <li><code><a title="osbot_utils.utils.Files.file_open_gz" href="#osbot_utils.utils.Files.file_open_gz">file_open_gz</a></code></li>
 <li><code><a title="osbot_utils.utils.Files.file_save" href="#osbot_utils.utils.Files.file_save">file_save</a></code></li>
+<li><code><a title="osbot_utils.utils.Files.file_sha256" href="#osbot_utils.utils.Files.file_sha256">file_sha256</a></code></li>
 <li><code><a title="osbot_utils.utils.Files.file_size" href="#osbot_utils.utils.Files.file_size">file_size</a></code></li>
 <li><code><a title="osbot_utils.utils.Files.file_stats" href="#osbot_utils.utils.Files.file_stats">file_stats</a></code></li>
 <li><code><a title="osbot_utils.utils.Files.file_unzip" href="#osbot_utils.utils.Files.file_unzip">file_unzip</a></code></li>
@@ -2253,6 +2484,7 @@ def zip_folder(root_dir, format=&#39;zip&#39;):
 <li><code><a title="osbot_utils.utils.Files.folder_copy" href="#osbot_utils.utils.Files.folder_copy">folder_copy</a></code></li>
 <li><code><a title="osbot_utils.utils.Files.folder_copy_except" href="#osbot_utils.utils.Files.folder_copy_except">folder_copy_except</a></code></li>
 <li><code><a title="osbot_utils.utils.Files.folder_create" href="#osbot_utils.utils.Files.folder_create">folder_create</a></code></li>
+<li><code><a title="osbot_utils.utils.Files.folder_create_in_parent" href="#osbot_utils.utils.Files.folder_create_in_parent">folder_create_in_parent</a></code></li>
 <li><code><a title="osbot_utils.utils.Files.folder_create_temp" href="#osbot_utils.utils.Files.folder_create_temp">folder_create_temp</a></code></li>
 <li><code><a title="osbot_utils.utils.Files.folder_delete_all" href="#osbot_utils.utils.Files.folder_delete_all">folder_delete_all</a></code></li>
 <li><code><a title="osbot_utils.utils.Files.folder_exists" href="#osbot_utils.utils.Files.folder_exists">folder_exists</a></code></li>
@@ -2289,6 +2521,8 @@ def zip_folder(root_dir, format=&#39;zip&#39;):
 <li><code><a title="osbot_utils.utils.Files.Files.bytes" href="#osbot_utils.utils.Files.Files.bytes">bytes</a></code></li>
 <li><code><a title="osbot_utils.utils.Files.Files.contents" href="#osbot_utils.utils.Files.Files.contents">contents</a></code></li>
 <li><code><a title="osbot_utils.utils.Files.Files.contents_gz" href="#osbot_utils.utils.Files.Files.contents_gz">contents_gz</a></code></li>
+<li><code><a title="osbot_utils.utils.Files.Files.contents_md5" href="#osbot_utils.utils.Files.Files.contents_md5">contents_md5</a></code></li>
+<li><code><a title="osbot_utils.utils.Files.Files.contents_sha256" href="#osbot_utils.utils.Files.Files.contents_sha256">contents_sha256</a></code></li>
 <li><code><a title="osbot_utils.utils.Files.Files.copy" href="#osbot_utils.utils.Files.Files.copy">copy</a></code></li>
 <li><code><a title="osbot_utils.utils.Files.Files.current_folder" href="#osbot_utils.utils.Files.Files.current_folder">current_folder</a></code></li>
 <li><code><a title="osbot_utils.utils.Files.Files.delete" href="#osbot_utils.utils.Files.Files.delete">delete</a></code></li>
@@ -2302,6 +2536,7 @@ def zip_folder(root_dir, format=&#39;zip&#39;):
 <li><code><a title="osbot_utils.utils.Files.Files.find" href="#osbot_utils.utils.Files.Files.find">find</a></code></li>
 <li><code><a title="osbot_utils.utils.Files.Files.folder_copy" href="#osbot_utils.utils.Files.Files.folder_copy">folder_copy</a></code></li>
 <li><code><a title="osbot_utils.utils.Files.Files.folder_create" href="#osbot_utils.utils.Files.Files.folder_create">folder_create</a></code></li>
+<li><code><a title="osbot_utils.utils.Files.Files.folder_create_in_parent" href="#osbot_utils.utils.Files.Files.folder_create_in_parent">folder_create_in_parent</a></code></li>
 <li><code><a title="osbot_utils.utils.Files.Files.folder_delete_all" href="#osbot_utils.utils.Files.Files.folder_delete_all">folder_delete_all</a></code></li>
 <li><code><a title="osbot_utils.utils.Files.Files.folder_exists" href="#osbot_utils.utils.Files.Files.folder_exists">folder_exists</a></code></li>
 <li><code><a title="osbot_utils.utils.Files.Files.folder_name" href="#osbot_utils.utils.Files.Files.folder_name">folder_name</a></code></li>

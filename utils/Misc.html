@@ -36,26 +36,17 @@ import textwrap
 import re
 import uuid
 import warnings
-from datetime import datetime
-from secrets import token_bytes
+from datetime   import datetime
+from secrets    import token_bytes
 from time import sleep
 
-from dotenv import load_dotenv
-from osbot_utils.fluent.Fluent_Dict import Fluent_Dict
+from dotenv     import load_dotenv
 
-from osbot_utils.fluent.Fluent_List import Fluent_List
-
-from osbot_utils.decorators.methods.function_type_check import function_type_check
-from osbot_utils.utils.Files import file_extension_fix
-
-
-@function_type_check
 def array_add(array : list, value):
     if value is not None:
         array.append(value)
     return value
 
-@function_type_check
 def array_find(array:list, item):
     if item in array:
         return array.index(item)
@@ -83,6 +74,12 @@ def array_pop_and_trim(array, position=None):
     if type(value) is str:
         return trim(value)
     return value
+
+def bytes_md5(bytes : bytes):
+    return hashlib.md5(bytes).hexdigest()
+
+def bytes_sha256(bytes : bytes):
+    return hashlib.sha256(bytes).hexdigest()
 
 def base64_to_bytes(bytes_base64):
     if type(bytes_base64) is str:
@@ -140,6 +137,7 @@ def env_vars_list():
     return list_set(env_vars())
 
 def flist(target):
+    from osbot_utils.fluent.Fluent_List import Fluent_List
     return Fluent_List(target)
 
 def get_field(target, field, default=None):
@@ -191,6 +189,7 @@ def list_set(target):
     return sorted(list(set(target)))
 
 def list_index_by(values, index_by):
+    from osbot_utils.fluent.Fluent_Dict import Fluent_Dict
     results = {}
     for item in values:
         results[item.get(index_by)] = item
@@ -209,9 +208,9 @@ def lower(target : str):
         return target.lower()
     return &#34;&#34;
 
-def md5(text):
+def str_md5(text : str):
     if text:
-        return hashlib.md5(&#39;{0}&#39;.format(text).encode()).hexdigest()
+        return bytes_md5(text.encode())
     return None
 
 def none_or_empty(target,field):
@@ -220,10 +219,17 @@ def none_or_empty(target,field):
         return (value is None) or value == &#39;&#39;
     return True
 
+def str_sha256(text: str):
+    if text:
+        return bytes_sha256(text.encode())
+        #return hashlib.sha256(&#39;{0}&#39;.format(text).encode()).hexdigest()
+    return None
+
 def random_bytes(length=24):
     return token_bytes(length)
 
 def random_filename(extension=&#39;.tmp&#39;, length=10):
+    from osbot_utils.utils.Files import file_extension_fix
     extension = file_extension_fix(extension)
     return &#39;{0}{1}&#39;.format(&#39;&#39;.join(random.choices(string.ascii_lowercase + string.digits, k=length)) ,  extension)
 
@@ -323,8 +329,9 @@ def word_wrap_escaped(text,length = 40):
     if text:
         return &#39;\\n&#39;.join(textwrap.wrap(text, length))
 
-bytes_to_string = bytes_to_str
-convert_to_float = convert_to_number</code></pre>
+bytes_to_string  = bytes_to_str
+convert_to_float = convert_to_number
+new_guid         = random_uuid</code></pre>
 </details>
 </section>
 <section>
@@ -343,8 +350,7 @@ convert_to_float = convert_to_number</code></pre>
 <summary>
 <span>Expand source code</span>
 </summary>
-<pre><code class="python">@function_type_check
-def array_add(array : list, value):
+<pre><code class="python">def array_add(array : list, value):
     if value is not None:
         array.append(value)
     return value</code></pre>
@@ -359,8 +365,7 @@ def array_add(array : list, value):
 <summary>
 <span>Expand source code</span>
 </summary>
-<pre><code class="python">@function_type_check
-def array_find(array:list, item):
+<pre><code class="python">def array_find(array:list, item):
     if item in array:
         return array.index(item)
     return -1</code></pre>
@@ -445,6 +450,32 @@ def array_find(array:list, item):
 </summary>
 <pre><code class="python">def base64_to_str(target):
     return bytes_to_str(base64_to_bytes(target))</code></pre>
+</details>
+</dd>
+<dt id="osbot_utils.utils.Misc.bytes_md5"><code class="name flex">
+<span>def <span class="ident">bytes_md5</span></span>(<span>bytes: bytes)</span>
+</code></dt>
+<dd>
+<div class="desc"></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def bytes_md5(bytes : bytes):
+    return hashlib.md5(bytes).hexdigest()</code></pre>
+</details>
+</dd>
+<dt id="osbot_utils.utils.Misc.bytes_sha256"><code class="name flex">
+<span>def <span class="ident">bytes_sha256</span></span>(<span>bytes: bytes)</span>
+</code></dt>
+<dd>
+<div class="desc"></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def bytes_sha256(bytes : bytes):
+    return hashlib.sha256(bytes).hexdigest()</code></pre>
 </details>
 </dd>
 <dt id="osbot_utils.utils.Misc.bytes_to_base64"><code class="name flex">
@@ -629,6 +660,7 @@ def array_find(array:list, item):
 <span>Expand source code</span>
 </summary>
 <pre><code class="python">def flist(target):
+    from osbot_utils.fluent.Fluent_List import Fluent_List
     return Fluent_List(target)</code></pre>
 </details>
 </dd>
@@ -774,6 +806,7 @@ def array_find(array:list, item):
 <span>Expand source code</span>
 </summary>
 <pre><code class="python">def list_index_by(values, index_by):
+    from osbot_utils.fluent.Fluent_Dict import Fluent_Dict
     results = {}
     for item in values:
         results[item.get(index_by)] = item
@@ -808,8 +841,8 @@ def array_find(array:list, item):
     return &#34;&#34;</code></pre>
 </details>
 </dd>
-<dt id="osbot_utils.utils.Misc.md5"><code class="name flex">
-<span>def <span class="ident">md5</span></span>(<span>text)</span>
+<dt id="osbot_utils.utils.Misc.new_guid"><code class="name flex">
+<span>def <span class="ident">new_guid</span></span>(<span>)</span>
 </code></dt>
 <dd>
 <div class="desc"></div>
@@ -817,10 +850,8 @@ def array_find(array:list, item):
 <summary>
 <span>Expand source code</span>
 </summary>
-<pre><code class="python">def md5(text):
-    if text:
-        return hashlib.md5(&#39;{0}&#39;.format(text).encode()).hexdigest()
-    return None</code></pre>
+<pre><code class="python">def random_uuid():
+    return str(uuid.uuid4())</code></pre>
 </details>
 </dd>
 <dt id="osbot_utils.utils.Misc.none_or_empty"><code class="name flex">
@@ -862,6 +893,7 @@ def array_find(array:list, item):
 <span>Expand source code</span>
 </summary>
 <pre><code class="python">def random_filename(extension=&#39;.tmp&#39;, length=10):
+    from osbot_utils.utils.Files import file_extension_fix
     extension = file_extension_fix(extension)
     return &#39;{0}{1}&#39;.format(&#39;&#39;.join(random.choices(string.ascii_lowercase + string.digits, k=length)) ,  extension)</code></pre>
 </details>
@@ -1064,6 +1096,37 @@ def array_find(array:list, item):
     return remove_multiple_spaces(target).split(&#39; &#39;)</code></pre>
 </details>
 </dd>
+<dt id="osbot_utils.utils.Misc.str_md5"><code class="name flex">
+<span>def <span class="ident">str_md5</span></span>(<span>text: str)</span>
+</code></dt>
+<dd>
+<div class="desc"></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def str_md5(text : str):
+    if text:
+        return bytes_md5(text.encode())
+    return None</code></pre>
+</details>
+</dd>
+<dt id="osbot_utils.utils.Misc.str_sha256"><code class="name flex">
+<span>def <span class="ident">str_sha256</span></span>(<span>text: str)</span>
+</code></dt>
+<dd>
+<div class="desc"></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def str_sha256(text: str):
+    if text:
+        return bytes_sha256(text.encode())
+        #return hashlib.sha256(&#39;{0}&#39;.format(text).encode()).hexdigest()
+    return None</code></pre>
+</details>
+</dd>
 <dt id="osbot_utils.utils.Misc.str_to_base64"><code class="name flex">
 <span>def <span class="ident">str_to_base64</span></span>(<span>target)</span>
 </code></dt>
@@ -1227,6 +1290,8 @@ def array_find(array:list, item):
 <li><code><a title="osbot_utils.utils.Misc.array_pop_and_trim" href="#osbot_utils.utils.Misc.array_pop_and_trim">array_pop_and_trim</a></code></li>
 <li><code><a title="osbot_utils.utils.Misc.base64_to_bytes" href="#osbot_utils.utils.Misc.base64_to_bytes">base64_to_bytes</a></code></li>
 <li><code><a title="osbot_utils.utils.Misc.base64_to_str" href="#osbot_utils.utils.Misc.base64_to_str">base64_to_str</a></code></li>
+<li><code><a title="osbot_utils.utils.Misc.bytes_md5" href="#osbot_utils.utils.Misc.bytes_md5">bytes_md5</a></code></li>
+<li><code><a title="osbot_utils.utils.Misc.bytes_sha256" href="#osbot_utils.utils.Misc.bytes_sha256">bytes_sha256</a></code></li>
 <li><code><a title="osbot_utils.utils.Misc.bytes_to_base64" href="#osbot_utils.utils.Misc.bytes_to_base64">bytes_to_base64</a></code></li>
 <li><code><a title="osbot_utils.utils.Misc.bytes_to_str" href="#osbot_utils.utils.Misc.bytes_to_str">bytes_to_str</a></code></li>
 <li><code><a title="osbot_utils.utils.Misc.bytes_to_string" href="#osbot_utils.utils.Misc.bytes_to_string">bytes_to_string</a></code></li>
@@ -1250,7 +1315,7 @@ def array_find(array:list, item):
 <li><code><a title="osbot_utils.utils.Misc.list_index_by" href="#osbot_utils.utils.Misc.list_index_by">list_index_by</a></code></li>
 <li><code><a title="osbot_utils.utils.Misc.list_set" href="#osbot_utils.utils.Misc.list_set">list_set</a></code></li>
 <li><code><a title="osbot_utils.utils.Misc.lower" href="#osbot_utils.utils.Misc.lower">lower</a></code></li>
-<li><code><a title="osbot_utils.utils.Misc.md5" href="#osbot_utils.utils.Misc.md5">md5</a></code></li>
+<li><code><a title="osbot_utils.utils.Misc.new_guid" href="#osbot_utils.utils.Misc.new_guid">new_guid</a></code></li>
 <li><code><a title="osbot_utils.utils.Misc.none_or_empty" href="#osbot_utils.utils.Misc.none_or_empty">none_or_empty</a></code></li>
 <li><code><a title="osbot_utils.utils.Misc.random_bytes" href="#osbot_utils.utils.Misc.random_bytes">random_bytes</a></code></li>
 <li><code><a title="osbot_utils.utils.Misc.random_filename" href="#osbot_utils.utils.Misc.random_filename">random_filename</a></code></li>
@@ -1268,6 +1333,8 @@ def array_find(array:list, item):
 <li><code><a title="osbot_utils.utils.Misc.sorted_set" href="#osbot_utils.utils.Misc.sorted_set">sorted_set</a></code></li>
 <li><code><a title="osbot_utils.utils.Misc.split_lines" href="#osbot_utils.utils.Misc.split_lines">split_lines</a></code></li>
 <li><code><a title="osbot_utils.utils.Misc.split_spaces" href="#osbot_utils.utils.Misc.split_spaces">split_spaces</a></code></li>
+<li><code><a title="osbot_utils.utils.Misc.str_md5" href="#osbot_utils.utils.Misc.str_md5">str_md5</a></code></li>
+<li><code><a title="osbot_utils.utils.Misc.str_sha256" href="#osbot_utils.utils.Misc.str_sha256">str_sha256</a></code></li>
 <li><code><a title="osbot_utils.utils.Misc.str_to_base64" href="#osbot_utils.utils.Misc.str_to_base64">str_to_base64</a></code></li>
 <li><code><a title="osbot_utils.utils.Misc.str_to_bytes" href="#osbot_utils.utils.Misc.str_to_bytes">str_to_bytes</a></code></li>
 <li><code><a title="osbot_utils.utils.Misc.str_to_date" href="#osbot_utils.utils.Misc.str_to_date">str_to_date</a></code></li>
